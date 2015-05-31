@@ -3,6 +3,8 @@
 #include <iostream>
 #include <ctime>
 
+#define LOGGER Logger::getLogger()
+
 class Logger
 {
 public:
@@ -11,7 +13,5 @@ public:
 
 private:
 	Logger();
-	~Logger();
-
-	Logger *mLogger = NULL;
+	static Logger* m_pLogger;
 };

@@ -47,7 +47,7 @@ Logger* mLogger = Logger::getInstance();
 
 int main(int argc, char **argv)
 {
-	cout << "Programm started" << endl;	// TODO: create logger class and never use cout anymore
+	mLogger->Log("Programm started");
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH);
@@ -85,10 +85,13 @@ void init(int width, int height)
 
 void loadTexture()
 {
-	Texture texture;	// holds information about the loaded TGA texture
+	TGALoader::Texture texture;	// holds information about the loaded TGA texture
 
 	// Load The Bitmap, Check For Errors.
-	if (LoadTGA(&texture, "crate.tga"))
+	TGALoader Loader;
+	
+	
+	if (Loader.LoadTGA(&texture, "crate.tga"))
 	{
 		glGenTextures(1, &texture.texID);				// Create The Texture ( CHANGE )
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);

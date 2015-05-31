@@ -1,28 +1,9 @@
-/********************************************************************************
-/Name:		TGA.cpp																*
-/Header:	tga.h																*
-/Purpose:	Load Compressed and Uncompressed TGA files							*
-/Functions:	LoadTGA(Texture * texture, char * filename)							*
-/			LoadCompressedTGA(Texture * texture, char * filename, FILE * fTGA)	*
-/			LoadUncompressedTGA(Texture * texture, char * filename, FILE * fTGA)*
-/*******************************************************************************/
 #include "TGALoader.h"
 
+GLubyte TGALoader::uTGAcompare[12] = { 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+GLubyte TGALoader::cTGAcompare[12] = { 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-/********************************************************************************
-/name :		LoadTGA(Texture * texture, char * filename)							*
-/function:  Open and test the file to make sure it is a valid TGA file			*
-/parems:	texture, pointer to a Texture structure								*
-/			filename, string pointing to file to open							*
-/********************************************************************************/
-
-TGAHeader tgaheader;        // Used To Store Our File Header
-TGA tga;                    // Used To Store File Information
-GLubyte uTGAcompare[12] = { 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-GLubyte cTGAcompare[12] = { 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-
-
-bool LoadTGA(Texture * texture, char * filename)				// Load a TGA file
+bool TGALoader::LoadTGA(Texture * texture, char * filename)				// Load a TGA file
 {
 	FILE * fTGA;												// File pointer to texture file
 #pragma warning (disable : 4996)
@@ -32,6 +13,7 @@ bool LoadTGA(Texture * texture, char * filename)				// Load a TGA file
 	if (fTGA == NULL)											// If it didn't open....
 	{
 		//MessageBox(NULL, "Could not open texture file", "ERROR", MB_OK);	// Display an error message
+
 		return false;														// Exit function
 	}
 
@@ -62,7 +44,7 @@ bool LoadTGA(Texture * texture, char * filename)				// Load a TGA file
 	return true;															// All went well, continue on
 }
 
-bool LoadUncompressedTGA(Texture * texture, char * filename, FILE * fTGA)	// Load an uncompressed TGA (note, much of this code is based on NeHe's 
+bool TGALoader::LoadUncompressedTGA(Texture * texture, char * filename, FILE * fTGA)	// Load an uncompressed TGA (note, much of this code is based on NeHe's 
 {																			// TGA Loading code nehe.gamedev.net)
 	if (fread(tga.header, sizeof(tga.header), 1, fTGA) == 0)					// Read TGA header
 	{
@@ -129,7 +111,7 @@ bool LoadUncompressedTGA(Texture * texture, char * filename, FILE * fTGA)	// Loa
 	return true;															// Return success
 }
 
-bool LoadCompressedTGA(Texture * texture, char * filename, FILE * fTGA)		// Load COMPRESSED TGAs
+bool TGALoader::LoadCompressedTGA(Texture * texture, char * filename, FILE * fTGA)		// Load COMPRESSED TGAs
 {
 	if (fread(tga.header, sizeof(tga.header), 1, fTGA) == 0)					// Attempt to read header
 	{
