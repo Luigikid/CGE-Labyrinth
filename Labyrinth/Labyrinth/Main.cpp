@@ -5,7 +5,9 @@
 #include <GL/gl.h>  
 #include <GL/glu.h>  
 #include <math.h>	// TODO: search for C++ math.h alike
-#include "tga.h"
+//#include "tga.h"
+#include "TGALoader.h"
+#include "Logger.h"
 
 #define RAD(x) (((x)*M_PI)/180.)	// TODO: Create method in Main Class
 
@@ -26,6 +28,7 @@ void timer(int value);
 void mouse(int button, int state, int x, int y);
 void mouseMotion(int x, int y);
 void reportGLError(const char * msg);
+void loadTexture();
 
 int animating = 1;		// TODO: What is this doing? Make it non global
 
@@ -39,6 +42,8 @@ int begin_y = 0;		/* y value of mouse movement */
 GLuint texture;
 int window = 0;
 float DeltaMovement = 0.0f;
+
+Logger* mLogger = Logger::getInstance();
 
 int main(int argc, char **argv)
 {
@@ -74,46 +79,33 @@ void init(int width, int height)
 
 	resize(width, height);
 
-	//GLsizei w, h;
-	//tgaInfo *info = 0;
-	//int mode;
+	loadTexture();
+}
 
-	//info = tgaLoad("crate.tga");
 
-	//if (info->status != TGA_OK) {
-	//	fprintf(stderr, "error loading texture image: %d\n", info->status);
+void loadTexture()
+{
+	Texture texture;	// holds information about the loaded TGA texture
 
-	//	return;
-	//}
-	//if (info->width != info->height) {
-	//	fprintf(stderr, "Image size %d x %d is not rectangular, giving up.\n",
-	//		info->width, info->height);
-	//	return;
-	//}
+	// Load The Bitmap, Check For Errors.
+	if (LoadTGA(&texture, "crate.tga"))
+	{
+		glGenTextures(1, &texture.texID);				// Create The Texture ( CHANGE )
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		glBindTexture(GL_TEXTURE_2D, texture.texID);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+		
+		glTexImage2D(GL_TEXTURE_2D, 0, texture.bpp / 8, texture.width, texture.height, 0, texture.type, GL_UNSIGNED_BYTE, texture.imageData);
 
-	//mode = info->pixelDepth / 8;  // will be 3 for rgb, 4 for rgba
-	//glGenTextures(1, &texture);
-
-	//glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	//glBindTexture(GL_TEXTURE_2D, texture);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-
-	//// Upload the texture bitmap. 
-	//w = info->width;
-	//h = info->height;
-
-	//reportGLError("before uploading texture");
-	//GLint format = (mode == 4) ? GL_RGBA : GL_RGB;
-	//glTexImage2D(GL_TEXTURE_2D, 0, format, w, h, 0, format,
-	//	GL_UNSIGNED_BYTE, info->imageData);	// Grafikkarte weiﬂ dann automatisch welches Level von Mip Mapping zu verwenden ist
-	//reportGLError("after uploading texture");
-
-	//tgaDestroy(info);
-
+		if (texture.imageData)						// If Texture Image Exists ( CHANGE )
+		{
+			free(texture.imageData);					// Free The Texture Image Memory ( CHANGE )
+		}
+	}
 }
 
 
