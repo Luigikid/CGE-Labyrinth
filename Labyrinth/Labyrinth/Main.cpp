@@ -47,7 +47,7 @@ Logger* mLogger = Logger::getInstance();
 
 int main(int argc, char **argv)
 {
-	mLogger->Log("Programm started");
+	mLogger->LogInfo("Programm started");
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH);

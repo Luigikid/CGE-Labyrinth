@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <GL\gl.h>                // Standard Header For OpenGL
 
+#include "Logger.h"
 class TGALoader
 {
 public:
@@ -32,6 +33,7 @@ public:
 		GLuint Bpp;             // Number Of BITS Per Pixel (24 Or 32)
 	} TGA;
 
+	TGALoader();
 	bool LoadTGA(Texture * texture, char * filename);
 
 private:
@@ -40,6 +42,7 @@ private:
 
 	static GLubyte uTGAcompare[12];
 	static GLubyte cTGAcompare[12];
+	Logger *mLogger;
 
 	bool LoadUncompressedTGA(Texture *, char *, FILE *);
 	bool LoadCompressedTGA(Texture *, char *, FILE *);

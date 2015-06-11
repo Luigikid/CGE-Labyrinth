@@ -3,6 +3,11 @@
 GLubyte TGALoader::uTGAcompare[12] = { 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 GLubyte TGALoader::cTGAcompare[12] = { 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
+TGALoader::TGALoader()
+{
+	Logger* mLogger = Logger::getInstance();
+}
+
 bool TGALoader::LoadTGA(Texture * texture, char * filename)				// Load a TGA file
 {
 	FILE * fTGA;												// File pointer to texture file
@@ -12,14 +17,13 @@ bool TGALoader::LoadTGA(Texture * texture, char * filename)				// Load a TGA fil
 
 	if (fTGA == NULL)											// If it didn't open....
 	{
-		//MessageBox(NULL, "Could not open texture file", "ERROR", MB_OK);	// Display an error message
-
+		mLogger->LogError("Could not open Texture file");
 		return false;														// Exit function
 	}
 
 	if (fread(&tgaheader, sizeof(TGAHeader), 1, fTGA) == 0)					// Attempt to read 12 byte header from file
 	{
-		//MessageBox(NULL, "Could not read file header", "ERROR", MB_OK);		// If it fails, display an error message 
+		mLogger->LogError("Could not read file header of texture");
 		if (fTGA != NULL)													// Check to seeiffile is still open
 		{
 			fclose(fTGA);													// If it is, close it
@@ -37,7 +41,7 @@ bool TGALoader::LoadTGA(Texture * texture, char * filename)				// Load a TGA fil
 	}
 	else																	// If header matches neither type
 	{
-		//MessageBox(NULL, "TGA file be type 2 or type 10 ", "Invalid Image", MB_OK);	// Display an error
+		mLogger->LogError("TGA file must be type 2 or type 10, but is invalid Image");
 		fclose(fTGA);
 		return false;																// Exit function
 	}
@@ -48,7 +52,7 @@ bool TGALoader::LoadUncompressedTGA(Texture * texture, char * filename, FILE * f
 {																			// TGA Loading code nehe.gamedev.net)
 	if (fread(tga.header, sizeof(tga.header), 1, fTGA) == 0)					// Read TGA header
 	{
-		//MessageBox(NULL, "Could not read info header", "ERROR", MB_OK);		// Display error
+		mLogger->LogError("Could not read info header");
 		if (fTGA != NULL)													// if file is still open
 		{
 			fclose(fTGA);													// Close it
@@ -65,7 +69,7 @@ bool TGALoader::LoadUncompressedTGA(Texture * texture, char * filename, FILE * f
 
 	if ((texture->width <= 0) || (texture->height <= 0) || ((texture->bpp != 24) && (texture->bpp != 32)))	// Make sure all information is valid
 	{
-		//MessageBox(NULL, "Invalid texture information", "ERROR", MB_OK);	// Display Error
+		mLogger->LogError("Invalid texture information");
 		if (fTGA != NULL)													// Check if file is still open
 		{
 			fclose(fTGA);													// If so, close it
@@ -84,14 +88,14 @@ bool TGALoader::LoadUncompressedTGA(Texture * texture, char * filename, FILE * f
 
 	if (texture->imageData == NULL)											// If no space was allocated
 	{
-		//MessageBox(NULL, "Could not allocate memory for image", "ERROR", MB_OK);	// Display Error
+		mLogger->LogError("Could not allocate memory for texture image");
 		fclose(fTGA);														// Close the file
 		return false;														// Return failed
 	}
 
 	if (fread(texture->imageData, 1, tga.imageSize, fTGA) != tga.imageSize)	// Attempt to read image data
 	{
-		//MessageBox(NULL, "Could not read image data", "ERROR", MB_OK);		// Display Error
+		mLogger->LogError("Could not read texture image data");
 		if (texture->imageData != NULL)										// If imagedata has data in it
 		{
 			free(texture->imageData);										// Delete data from memory
@@ -115,7 +119,7 @@ bool TGALoader::LoadCompressedTGA(Texture * texture, char * filename, FILE * fTG
 {
 	if (fread(tga.header, sizeof(tga.header), 1, fTGA) == 0)					// Attempt to read header
 	{
-		//MessageBox(NULL, "Could not read info header", "ERROR", MB_OK);		// Display Error
+		mLogger->LogError("Could not read texture info header");
 		if (fTGA != NULL)													// If file is open
 		{
 			fclose(fTGA);													// Close it
@@ -132,7 +136,7 @@ bool TGALoader::LoadCompressedTGA(Texture * texture, char * filename, FILE * fTG
 
 	if ((texture->width <= 0) || (texture->height <= 0) || ((texture->bpp != 24) && (texture->bpp != 32)))	//Make sure all texture info is ok
 	{
-		//MessageBox(NULL, "Invalid texture information", "ERROR", MB_OK);	// If it isnt...Display error
+		mLogger->LogError("Invalid texture information");
 		if (fTGA != NULL)													// Check if file is open
 		{
 			fclose(fTGA);													// Ifit is, close it
@@ -151,7 +155,7 @@ bool TGALoader::LoadCompressedTGA(Texture * texture, char * filename, FILE * fTG
 
 	if (texture->imageData == NULL)											// If it wasnt allocated correctly..
 	{
-		//MessageBox(NULL, "Could not allocate memory for image", "ERROR", MB_OK);	// Display Error
+		mLogger->LogError("Could not allocate memory for texture image");
 		fclose(fTGA);														// Close file
 		return false;														// Return failed
 	}
@@ -167,7 +171,7 @@ bool TGALoader::LoadCompressedTGA(Texture * texture, char * filename, FILE * fTG
 
 		if (fread(&chunkheader, sizeof(GLubyte), 1, fTGA) == 0)				// Read in the 1 byte header
 		{
-			//MessageBox(NULL, "Could not read RLE header", "ERROR", MB_OK);	// Display Error
+			mLogger->LogError("Could not read RLE header");
 			if (fTGA != NULL)												// If file is open
 			{
 				fclose(fTGA);												// Close file
@@ -186,7 +190,7 @@ bool TGALoader::LoadCompressedTGA(Texture * texture, char * filename, FILE * fTG
 			{
 				if (fread(colorbuffer, 1, tga.bytesPerPixel, fTGA) != tga.bytesPerPixel) // Try to read 1 pixel
 				{
-					//MessageBox(NULL, "Could not read image data", "ERROR", MB_OK);		// IF we cant, display an error
+					mLogger->LogError("Could not read image data");
 
 					if (fTGA != NULL)													// See if file is open
 					{
@@ -220,7 +224,7 @@ bool TGALoader::LoadCompressedTGA(Texture * texture, char * filename, FILE * fTG
 
 				if (currentpixel > pixelcount)											// Make sure we havent read too many pixels
 				{
-					//MessageBox(NULL, "Too many pixels read", "ERROR", NULL);			// if there is too many... Display an error!
+					mLogger->LogError("Too many texture pixels read");
 
 					if (fTGA != NULL)													// If there is a file open
 					{
@@ -246,7 +250,7 @@ bool TGALoader::LoadCompressedTGA(Texture * texture, char * filename, FILE * fTG
 			chunkheader -= 127;															// Subteact 127 to get rid of the ID bit
 			if (fread(colorbuffer, 1, tga.bytesPerPixel, fTGA) != tga.bytesPerPixel)		// Attempt to read following color values
 			{
-				//MessageBox(NULL, "Could not read from file", "ERROR", MB_OK);			// If attempt fails.. Display error (again)
+				mLogger->LogError("Could not read from texture file");
 
 				if (fTGA != NULL)														// If thereis a file open
 				{
@@ -282,7 +286,7 @@ bool TGALoader::LoadCompressedTGA(Texture * texture, char * filename, FILE * fTG
 
 				if (currentpixel > pixelcount)											// Make sure we havent written too many pixels
 				{
-					//MessageBox(NULL, "Too many pixels read", "ERROR", NULL);			// if there is too many... Display an error!
+					mLogger->LogError("Too many texture pixels read");
 
 					if (fTGA != NULL)													// If there is a file open
 					{
