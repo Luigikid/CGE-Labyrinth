@@ -2,49 +2,67 @@
 #include <windows.h>              // Standard Windows header
 #include <stdio.h>
 #include <GL\gl.h>                // Standard Header For OpenGL
-
+#include <glut.h> 
+#include <GL/glu.h>  
 #include "Logger.h"
+
+#define TGA_ERROR_FILE_OPEN          -5
+#define TGA_ERROR_READING_FILE       -4
+#define TGA_ERROR_INDEXED_COLOR      -3
+#define TGA_ERROR_MEMORY             -2
+#define TGA_ERROR_COMPRESSED_FILE    -1
+#define TGA_OK                        0
+
 class TGALoader
 {
 public:
-	typedef struct
-	{
-		GLubyte* imageData;         // Hold All The Color Values For The Image.
-		GLuint  bpp;                // Hold The Number Of Bits Per Pixel.          
-		GLuint width;               // The Width Of The Entire Image.  
-		GLuint height;              // The Height Of The Entire Image. 
-		GLuint texID;               // Texture ID For Use With glBindTexture.  
-		GLuint type;                // Data Stored In * ImageData (GL_RGB Or GL_RGBA)
-	} Texture;
-
-	typedef struct
-	{
-		GLubyte Header[12];         // File Header To Determine File Type
-	} TGAHeader;
-
-	typedef struct
-	{
-		GLubyte header[6];          // Holds The First 6 Useful Bytes Of The File
-		GLuint bytesPerPixel;           // Number Of BYTES Per Pixel (3 Or 4)
-		GLuint imageSize;           // Amount Of Memory Needed To Hold The Image
-		GLuint type;                // The Type Of Image, GL_RGB Or GL_RGBA
-		GLuint Height;              // Height Of Image                 
-		GLuint Width;               // Width Of Image              
-		GLuint Bpp;             // Number Of BITS Per Pixel (24 Or 32)
-	} TGA;
-
 	TGALoader();
-	bool LoadTGA(Texture * texture, char * filename);
+	typedef struct 
+	{
+		int status;
+		unsigned char type;
+		unsigned char pixelDepth;
+		short int width;
+		short int height;
+		unsigned char *imageData;
+	} 
+	tgaInfo;
+
+	tgaInfo* tgaLoad(char *filename);
+
+	int tgaSave(char *filename,
+		short int width,
+		short int height,
+		unsigned char pixelDepth,
+		unsigned char *imageData);
+
+	int tgaSaveSeries(char *filename,
+		short int width,
+		short int height,
+		unsigned char pixelDepth,
+		unsigned char *imageData);
+
+	void tgaRGBtoGreyscale(tgaInfo *info);
+
+	int tgaGrabScreenSeries(char *filename, int x, int y, int w, int h);
+
+	void tgaDestroy(tgaInfo *info);
+
+	void loadTexture(std::string Filename);
+	GLuint getTextureId();
+
+	GLuint TextureId;
+
+#ifndef _WIN32 
+	static void swap_16bit_word(uint16_t *word)
+#endif
 
 private:
-	TGAHeader tgaheader;        // Used To Store Our File Header
-	TGA tga;                    // Used To Store File Information
-
-	static GLubyte uTGAcompare[12];
-	static GLubyte cTGAcompare[12];
+	void tgaLoadHeader(FILE *file, tgaInfo *info);
+	void tgaLoadImageData(FILE *file, tgaInfo *info);
 	Logger *mLogger;
 
-	bool LoadUncompressedTGA(Texture *, char *, FILE *);
-	bool LoadCompressedTGA(Texture *, char *, FILE *);
+	void reportGLError(const char * msg);
+
 	
 };
