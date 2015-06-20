@@ -6,6 +6,7 @@
 #include <GL/glu.h>  
 #include "Logger.h"
 
+
 #define TGA_ERROR_FILE_OPEN          -5
 #define TGA_ERROR_READING_FILE       -4
 #define TGA_ERROR_INDEXED_COLOR      -3

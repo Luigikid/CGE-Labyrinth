@@ -358,6 +358,9 @@ void TGALoader::loadTexture(std::string Filename)
 	w = info->width;
 	h = info->height;
 
+	// glGenerateMipmap(GL_TEXTURE_2D); not defined? use another version  of opengl?
+
+
 	reportGLError("before uploading texture");
 	GLint format = (mode == 4) ? GL_RGBA : GL_RGB;
 	glTexImage2D(GL_TEXTURE_2D, 0, format, w, h, 0, format,	// bei RGB Bild hat jedes pixel 3 (RGB) ein 1 Byte -> daher auch unsigned byte
