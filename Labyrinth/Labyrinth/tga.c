@@ -1,6 +1,6 @@
 // Based on public domain code by Antonio R. Fernandes <ajbrf@yahoo.com>
-#include <stdio.h>
-#include <stdlib.h>
+
+#define _CRT_SECURE_NO_WARNINGS 1
 
 #ifdef _WIN32
 #include <windows.h>
@@ -20,9 +20,9 @@
 #include <windows.h>
 #endif
 
-
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-
 
 #ifndef _WIN32
 #include <stdint.h>
@@ -118,7 +118,8 @@ void tgaLoadImageData(FILE *file, tgaInfo *info) {
 
 // this is the function to call when we want to load
 // an image
-tgaInfo * tgaLoad(char *filename) {
+tgaInfo * tgaLoad(char *filename) 
+{
 
 	FILE *file;
 	tgaInfo *info;
@@ -131,11 +132,7 @@ tgaInfo * tgaLoad(char *filename) {
 
 
 	// open the file for reading (binary mode)
-	
-#pragma warning (disable : 4996)
 	file = fopen(filename, "rb");
-#pragma warning(default: 4996)
-	
 	if (file == NULL) {
 		info->status = TGA_ERROR_FILE_OPEN;
 		return(info);
@@ -253,11 +250,11 @@ int tgaGrabScreenSeries(char *filename, int x, int y, int w, int h) {
 }
 
 // saves an array of pixels as a TGA image
-int tgaSave(char			*filename,
-	short int		width,
-	short int		height,
-	unsigned char	pixelDepth,
-	unsigned char	*imageData) {
+int tgaSave(char            *filename,
+	short int        width,
+	short int        height,
+	unsigned char    pixelDepth,
+	unsigned char    *imageData) {
 
 	unsigned char cGarbage = 0, type, mode, aux;
 	short int iGarbage = 0;
@@ -265,9 +262,7 @@ int tgaSave(char			*filename,
 	FILE *file;
 
 	// open file and check for errors
-#pragma warning (disable : 4996)
 	file = fopen(filename, "wb");
-#pragma warning(default: 4996)
 	if (file == NULL) {
 		return(TGA_ERROR_FILE_OPEN);
 	}
@@ -315,20 +310,19 @@ int tgaSave(char			*filename,
 }
 
 // saves a series of files with names "filenameX.tga"
-int tgaSaveSeries(char		*filename,
-	short int		width,
-	short int		height,
-	unsigned char	pixelDepth,
-	unsigned char	*imageData) {
+int tgaSaveSeries(char        *filename,
+	short int        width,
+	short int        height,
+	unsigned char    pixelDepth,
+	unsigned char    *imageData) {
 
 	char *newFilename;
 	int status;
 	// compute the new filename by adding the series number and the extension
 
 	newFilename = (char *)malloc(sizeof(char)* strlen(filename) + 8);
-#pragma warning(disable: 4996)
+
 	sprintf(newFilename, "%s%d.tga", filename, savedImages);
-#pragma warning(default: 4996)
 	// save the image
 	status = tgaSave(newFilename, width, height, pixelDepth, imageData);
 	//increase the counter

@@ -37,5 +37,8 @@
     <Image Include="crate.tga">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="elf.tga">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

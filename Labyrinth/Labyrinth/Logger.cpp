@@ -12,9 +12,14 @@ Logger* Logger::getInstance()
 	if (m_pLogger == NULL)
 	{
 		m_pLogger = new Logger();
-		// TODO: Open new log file
+		
 	}
 	return m_pLogger;
+}
+
+Logger::~Logger()
+{
+	mLogFile.close();
 }
 
 void Logger::Log(std::string Message, Logger::Level Level = Level::Info)
@@ -33,6 +38,11 @@ void Logger::Log(std::string Message, Logger::Level Level = Level::Info)
 
 	// log message to console 
 	std::cout << LogMessage;
+
+	//log message to log File
+	mLogFile.open("Labyrinth.log", std::fstream::out | std::fstream::app);		// TODO: open this in constructor
+	mLogFile << LogMessage;
+	mLogFile.close();
 
 	// log message to output Window from Visual Studio
 	std::wstring stemp = std::wstring(LogMessage.begin(), LogMessage.end());

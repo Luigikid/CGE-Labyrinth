@@ -90,6 +90,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="crate.tga" />
+    <Image Include="elf.tga" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
