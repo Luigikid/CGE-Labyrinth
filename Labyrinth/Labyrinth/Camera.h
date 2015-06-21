@@ -14,15 +14,19 @@
 class Camera
 {
 public:
-	Camera();
-	~Camera();
+
+	static Camera* getInstance();
+	Camera::~Camera();
 
 	void calculateViewAngle(int x, int y);
 	GLfloat getViewCoordX();
 	GLfloat getViewCoordY();
 	GLfloat getViewCoordZ();
+	GLfloat getAngleX();
+	GLfloat getAngleY();
 
 private:
+	
 	GLfloat angleX;
 	GLfloat angleY;
 	GLfloat beginAngleX;
@@ -38,5 +42,8 @@ private:
 		GLfloat z;
 	};
 	viewCoords viewCoords;
+
+	static Camera *pCamera;
+	Camera();
 };
 

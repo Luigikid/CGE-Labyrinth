@@ -9,6 +9,7 @@
 #include "TGALoader.h"
 #include "Logger.h"
 #include "Camera.h"
+#include "Walker.h"
 
 
 
@@ -43,7 +44,8 @@ float DeltaMovementUpDown = 0.0f;
 
 TGALoader *mLoader;
 Logger* mLogger = Logger::getInstance();
-Camera mCamera;
+Camera* mCamera = Camera::getInstance();
+Walker mWalker;
 
 int main(int argc, char **argv)
 {
@@ -127,16 +129,28 @@ void keyPressed(unsigned char key, int x, int y)
 
 	case 'w':
 		DeltaMovementUpDown += 0.1f;
+		mWalker.walk(Walker::EWalkingDirection::up);
+		break;
+
+	case 'a':
+		mWalker.walk(Walker::EWalkingDirection::left);
 		break;
 
 	case 's':
+		mWalker.walk(Walker::EWalkingDirection::down);
 		DeltaMovementUpDown -= 0.1f;
+		break;
+
+	case 'd':
+		mWalker.walk(Walker::EWalkingDirection::right);
 		break;
 
 	default:
 		break;
 	}
 }
+
+
 
 void mouse(int button, int state, int x, int y)
 {
@@ -164,7 +178,7 @@ void mouse(int button, int state, int x, int y)
 void mouseMotion(int x, int y)
 {
 
-	mCamera.calculateViewAngle(x, y);
+	mCamera->calculateViewAngle(x, y);
 
 	
 	
@@ -180,7 +194,7 @@ void display()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
-	gluLookAt(mCamera.getViewCoordX(), mCamera.getViewCoordY(), mCamera.getViewCoordZ(),	// ersten 3 Werte = x,y,z von Aug-Punkt - "dort wo ich hinschau"
+	gluLookAt(mCamera->getViewCoordX(), mCamera->getViewCoordY(), mCamera->getViewCoordZ(),	// ersten 3 Werte = x,y,z von Aug-Punkt - "dort wo ich hinschau"
 		0., 0., 0.,		// center point
 		0., 1., 0.);	// letzten werte = "up pointer" -> rauf is bei uns rauf = y Achse
 

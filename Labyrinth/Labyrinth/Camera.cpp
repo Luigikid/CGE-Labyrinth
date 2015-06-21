@@ -1,5 +1,6 @@
 #include "Camera.h"
 
+Camera* Camera::pCamera = NULL;
 
 Camera::Camera()
 {
@@ -9,6 +10,17 @@ Camera::Camera()
 Camera::~Camera()
 {
 }
+
+Camera* Camera::getInstance()
+{
+	if (pCamera == NULL)
+	{
+		pCamera = new Camera();
+
+	}
+	return pCamera;
+}
+
 
 void Camera::calculateViewAngle(int x, int y)
 {
@@ -33,7 +45,6 @@ void Camera::calculateViewAngle(int x, int y)
 	viewCoords.x = -sinf(RAD(angleY));
 	viewCoords.y = sinf(RAD(angleX));
 	viewCoords.z = cosf(RAD(angleY));
-
 }
 
 GLfloat Camera::getViewCoordX()
@@ -47,4 +58,12 @@ GLfloat Camera::getViewCoordY()
 GLfloat Camera::getViewCoordZ()
 {
 	return viewCoords.z;
+}
+GLfloat Camera::getAngleX()
+{
+	return angleX;
+}
+GLfloat Camera::getAngleY()
+{
+	return angleY;
 }
