@@ -8,14 +8,12 @@
 //#include "tga.h"
 #include "TGALoader.h"
 #include "Logger.h"
+#include "Camera.h"
 
 
-#define RAD(x) (((x)*M_PI)/180.)	// TODO: Create method in Main Class
 
-/* some math.h files don't define pi... */
-#ifndef M_PI
-#define M_PI 3.141592653
-#endif
+
+
 
 
 
@@ -35,15 +33,6 @@ void loadTexture();
 void RenderScene();
 
 
-int animating = 1;		// TODO: What is this doing? Make it non global
-
-//Camera:
-GLfloat angle_y = 0;	/* angle of spin around y axis of scene, in degrees */
-GLfloat angle_x = 0;	/* angle of spin around x axis  of scene, in degrees */
-float x = 0.0f, z = 5.0f, y = 1.75f;	// XZ position of the camera
-float lx = 0.0f, lz = -1.0f, ly = 0.0f;	// defining the cameras position
-float deltaAngle = 0.0f;
-float deltaMove = 0;
 
 int moving = 0;			/* flag that is true while mouse moves */
 int begin_x = 0;        /* x value of mouse movement */
@@ -54,6 +43,7 @@ float DeltaMovementUpDown = 0.0f;
 
 TGALoader *mLoader;
 Logger* mLogger = Logger::getInstance();
+Camera mCamera;
 
 int main(int argc, char **argv)
 {
@@ -98,13 +88,6 @@ void init(int width, int height)
 	mLoader->loadTexture("crate.tga");
 }
 
-void computePos(float deltaMove) 
-{
-
-	x += deltaMove * lx * 0.1f;
-	z += deltaMove * lz * 0.1f;
-}
-
 void resize(int width, int height)
 {
 	// prevent division by zero
@@ -140,10 +123,6 @@ void keyPressed(unsigned char key, int x, int y)
 	case 27:
 		glutDestroyWindow(window);
 		exit(0);
-		break;
-	case 'a':
-		animating = animating ? 0 : 1;
-		glutPostRedisplay();
 		break;
 
 	case 'w':
@@ -184,22 +163,10 @@ void mouse(int button, int state, int x, int y)
 
 void mouseMotion(int x, int y)
 {
-	/* calculate new modelview matrix values */
-	angle_y = angle_y + (x - begin_x);	// aktuelle x coord - x coordinate von beginn
-	angle_x = angle_x + (y - begin_y);	// wenn ich mich nach links rechts drehen will -> drehung um y Achse -> daher sind hier x und y "vertauscht"
 
-	if (angle_x > 360.0)
-		angle_x -= 360.0;
-	else if (angle_x < -360.0)
-		angle_x += 360.0;
+	mCamera.calculateViewAngle(x, y);
 
-	if (angle_y > 360.0)
-		angle_y -= 360.0;
-	else if (angle_y < -360.0)
-		angle_y += 360.0;
-
-	begin_x = x;
-	begin_y = y;
+	
 	
 	glutPostRedisplay();
 }
@@ -213,8 +180,8 @@ void display()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
-	gluLookAt(-sinf(RAD(angle_y)), sinf(RAD(angle_x)), cosf(RAD(angle_y)),	// ersten 3 Werte = x,y,z von Aug-Punkt - "dort wo ich hinschau"
-		0., 0., 0.,	// mit sinf rad bla werden die koordinaten aus den winkel errechnet; 2. 3 Werte = center point
+	gluLookAt(mCamera.getViewCoordX(), mCamera.getViewCoordY(), mCamera.getViewCoordZ(),	// ersten 3 Werte = x,y,z von Aug-Punkt - "dort wo ich hinschau"
+		0., 0., 0.,		// center point
 		0., 1., 0.);	// letzten werte = "up pointer" -> rauf is bei uns rauf = y Achse
 
 	glEnable(GL_TEXTURE_2D);
