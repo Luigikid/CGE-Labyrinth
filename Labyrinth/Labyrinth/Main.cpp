@@ -9,12 +9,6 @@
 #include "TGALoader.h"
 #include "Logger.h"
 #include "Camera.h"
-#include "Walker.h"
-
-
-
-
-
 
 
 
@@ -44,7 +38,6 @@ float DeltaMovementUpDown = 0.0f;
 TGALoader *mLoader;
 Logger* mLogger = Logger::getInstance();
 Camera* mCamera = Camera::getInstance();
-Walker mWalker;
 
 int main(int argc, char **argv)
 {
@@ -112,23 +105,23 @@ void keyPressed(unsigned char key, int x, int y)
 		break;
 
 	case 'w':
-		mWalker.walk(Walker::EWalkingDirection::up);
 		mCamera->moveForward();
 		break;
 
 	case 'a':
-		mWalker.walk(Walker::EWalkingDirection::left);
 		mCamera->moveLeft();
 		break;
 
 	case 's':
-		mWalker.walk(Walker::EWalkingDirection::down);
 		mCamera->moveBack();
 		break;
 
 	case 'd':
-		mWalker.walk(Walker::EWalkingDirection::right);
 		mCamera->moveRight();
+		break;
+
+	case 'c':
+		mCamera->logViewStats();
 		break;
 
 	default:

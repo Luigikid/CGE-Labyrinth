@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <glut.h>
 #include <vector>
+#include "Logger.h"
+#include "Level.h"
 
 /* some math.h files don't define pi... */
 #ifndef M_PI
@@ -29,6 +31,9 @@ public:
 	void moveBack();
 	void moveLeft();
 	void moveRight();
+
+	void logViewStats();
+
 private:
 	
 	GLfloat angleX;
@@ -50,5 +55,8 @@ private:
 	int speedDivisor = 5;
 	static Camera *pCamera;
 	Camera();
+
+	Logger* mLogger = Logger::getInstance();
+	Level* mLevel = Level::getInstance();
 };
 
