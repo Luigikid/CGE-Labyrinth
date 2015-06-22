@@ -25,6 +25,8 @@ public:
 	GLfloat getAngleX();
 	GLfloat getAngleY();
 
+	void moveForward();
+	void moveBack();
 private:
 	
 	GLfloat angleX;
@@ -43,6 +45,7 @@ private:
 	};
 	viewCoords viewCoords;
 
+	int speedDivisor = 5;
 	static Camera *pCamera;
 	Camera();
 };

@@ -4,6 +4,14 @@ Camera* Camera::pCamera = NULL;
 
 Camera::Camera()
 {
+	viewCoords.x = 0;
+	viewCoords.y = 0;
+	viewCoords.z = -2;
+
+	beginAngleX = 0;
+	beginAngleY = 0;
+	angleX = 0;
+	angleY = 0;
 }
 
 
@@ -40,11 +48,20 @@ void Camera::calculateViewAngle(int x, int y)
 
 	beginAngleX = x;
 	beginAngleY = y;
+}
 
+void Camera::moveForward()
+{
+	viewCoords.x += float(sin(RAD(angleY))) / speedDivisor;
+	viewCoords.z -= float(cos(RAD(angleY))) / speedDivisor;
+	viewCoords.y -= float(sin(RAD(angleX))) / speedDivisor;
+}
 
-	viewCoords.x = -sinf(RAD(angleY));
-	viewCoords.y = sinf(RAD(angleX));
-	viewCoords.z = cosf(RAD(angleY));
+void Camera::moveBack()
+{
+	viewCoords.x -= float(sin(RAD(angleY))) / speedDivisor;
+	viewCoords.z += float(cos(RAD(angleY))) / speedDivisor;
+	viewCoords.y += float(sin(RAD(angleX))) / speedDivisor;
 }
 
 GLfloat Camera::getViewCoordX()

@@ -22,7 +22,6 @@ using namespace std;
 
 void init(int width, int height);	// TODO: Create Main Class and not this c like bull****
 void resize(int width, int height);
-void specialKeyPressed(int key, int x, int y);
 void keyPressed(unsigned char key, int x, int y);
 void display();
 void drawCube();
@@ -63,7 +62,6 @@ int main(int argc, char **argv)
 	glutDisplayFunc(&display);
 	glutReshapeFunc(&resize);
 	glutKeyboardFunc(&keyPressed);
-	glutSpecialFunc(&specialKeyPressed);
 
 	init(640, 480);
 	glutTimerFunc(15, timer, 1);
@@ -88,6 +86,7 @@ void init(int width, int height)
 	resize(width, height);
 
 	mLoader->loadTexture("crate.tga");
+
 }
 
 void resize(int width, int height)
@@ -104,21 +103,6 @@ void resize(int width, int height)
 	glMatrixMode(GL_MODELVIEW);
 }
 
-void specialKeyPressed(int key, int x, int y)
-{
-	switch (key) {
-
-	case GLUT_KEY_UP:     /* <cursor up> */
-		DeltaMovementUpDown += 0.1f;
-		glutPostRedisplay();
-		break;
-	case GLUT_KEY_DOWN:     /* <cursor down> */
-		DeltaMovementUpDown -= 0.1f;
-		glutPostRedisplay();
-		break;
-	}
-}
-
 void keyPressed(unsigned char key, int x, int y)
 {
 	switch (key) {
@@ -128,8 +112,8 @@ void keyPressed(unsigned char key, int x, int y)
 		break;
 
 	case 'w':
-		DeltaMovementUpDown += 0.1f;
 		mWalker.walk(Walker::EWalkingDirection::up);
+		mCamera->moveForward();
 		break;
 
 	case 'a':
@@ -138,7 +122,7 @@ void keyPressed(unsigned char key, int x, int y)
 
 	case 's':
 		mWalker.walk(Walker::EWalkingDirection::down);
-		DeltaMovementUpDown -= 0.1f;
+		mCamera->moveBack();
 		break;
 
 	case 'd':
@@ -180,8 +164,6 @@ void mouseMotion(int x, int y)
 
 	mCamera->calculateViewAngle(x, y);
 
-	
-	
 	glutPostRedisplay();
 }
 
@@ -194,16 +176,20 @@ void display()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
-	gluLookAt(mCamera->getViewCoordX(), mCamera->getViewCoordY(), mCamera->getViewCoordZ(),	// ersten 3 Werte = x,y,z von Aug-Punkt - "dort wo ich hinschau"
-		0., 0., 0.,		// center point
-		0., 1., 0.);	// letzten werte = "up pointer" -> rauf is bei uns rauf = y Achse
+	//gluLookAt(mCamera->getViewCoordX(), mCamera->getViewCoordY(), mCamera->getViewCoordZ(),	// ersten 3 Werte = x,y,z von Aug-Punkt - "dort wo ich hinschau"
+	//	0., 0., 0.,		// center point
+	//	0., 1., 0.);	// letzten werte = "up pointer" -> rauf is bei uns rauf = y Achse
+	
+	glRotatef(mCamera->getAngleX(), 1, 0, 0);
+	glRotatef(mCamera->getAngleY(), 0, 1, 0);
+	glTranslatef(-mCamera->getViewCoordX(), -mCamera->getViewCoordY(), -mCamera->getViewCoordZ());	// das ist das vor- zurück gehen. gehen verändert hier die welt und nicht den augpunkt
 
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);	// Environment mode -> bei GL_MODULATE wird defaultmäßig multipliziert; bei GL_BLEND wird "geblendet"
 	
 	glBindTexture(GL_TEXTURE_2D, mLoader->getTextureId());
 
-	glTranslatef(0, 0, -DeltaMovementUpDown);	// das ist das vor- zurück gehen. gehen verändert hier die welt und nicht den augpunkt
+	
 	RenderScene();
 
 
