@@ -118,6 +118,7 @@ void keyPressed(unsigned char key, int x, int y)
 
 	case 'a':
 		mWalker.walk(Walker::EWalkingDirection::left);
+		mCamera->moveLeft();
 		break;
 
 	case 's':
@@ -127,6 +128,7 @@ void keyPressed(unsigned char key, int x, int y)
 
 	case 'd':
 		mWalker.walk(Walker::EWalkingDirection::right);
+		mCamera->moveRight();
 		break;
 
 	default:

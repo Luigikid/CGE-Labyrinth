@@ -54,14 +54,26 @@ void Camera::moveForward()
 {
 	viewCoords.x += float(sin(RAD(angleY))) / speedDivisor;
 	viewCoords.z -= float(cos(RAD(angleY))) / speedDivisor;
-	viewCoords.y -= float(sin(RAD(angleX))) / speedDivisor;
+	//viewCoords.y -= float(sin(RAD(angleX))) / speedDivisor;
 }
 
 void Camera::moveBack()
 {
 	viewCoords.x -= float(sin(RAD(angleY))) / speedDivisor;
 	viewCoords.z += float(cos(RAD(angleY))) / speedDivisor;
-	viewCoords.y += float(sin(RAD(angleX))) / speedDivisor;
+	//viewCoords.y += float(sin(RAD(angleX))) / speedDivisor;
+}
+
+void Camera::moveLeft()
+{
+	viewCoords.x -= float(cos(RAD(angleY))) * 0.2;
+	viewCoords.z -= float(sin(RAD(angleY))) * 0.2;
+}
+
+void Camera::moveRight()
+{
+	viewCoords.x += float(cos(RAD(angleY))) * 0.2;
+	viewCoords.z += float(sin(RAD(angleY))) * 0.2;
 }
 
 GLfloat Camera::getViewCoordX()

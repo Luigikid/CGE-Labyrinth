@@ -27,6 +27,8 @@ public:
 
 	void moveForward();
 	void moveBack();
+	void moveLeft();
+	void moveRight();
 private:
 	
 	GLfloat angleX;
