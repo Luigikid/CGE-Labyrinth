@@ -25,8 +25,6 @@ void mouse(int button, int state, int x, int y);
 void mouseMotion(int x, int y);
 void reportGLError(const char * msg);
 void loadTexture();
-void RenderScene();
-
 
 
 int moving = 0;			/* flag that is true while mouse moves */
@@ -167,9 +165,6 @@ void mouseMotion(int x, int y)
 }
 
 
-
-
-
 void display()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -189,86 +184,11 @@ void display()
 	glBindTexture(GL_TEXTURE_2D, mLoader->getTextureId());
 
 	
-	RenderScene();
-
+	mLevel->renderLevel();
 
 	glDisable(GL_TEXTURE_2D);
 
 	glutSwapBuffers();
-}
-
-void RenderScene()
-{
-	//common practice - ursprungspunkt verschieben und objekte auf ursprungspunkt zeichnen
-	mLevel->renderLevel();
-	//glPushMatrix();
-	//glTranslatef(-2, 0, 0);
-	//glTranslatef(0, 0, 4);	// linke reihe ganz vorne, und dann immer -4 nach hinten (oder umgekehrt)
-	//drawCube();
-	//glTranslatef(0, 0, -4);
-	//drawCube();
-	//glTranslatef(0, 0, -4);
-	//drawCube();
-	//glPopMatrix();
-
-	//glPushMatrix();
-	//glTranslatef(2, 0, 0);
-	//glTranslatef(0, 0, 4);
-	//drawCube();
-	//glTranslatef(0, 0, -4);
-	//drawCube();
-	//glTranslatef(0, 0, -4);
-	//drawCube();
-	//glPopMatrix();
-
-	//glPushMatrix();
-	//glTranslatef(6, 0, 0);
-	//glTranslatef(0, 0, 4);
-	//drawCube();
-	//glTranslatef(0, 0, -4);
-	//drawCube();
-	//glTranslatef(0, 0, -4);
-	//drawCube();
-	//glPopMatrix();
-}
-
-void drawCube()
-{
-	//Die Kisten textur ist eine "hoch-frequente" Textur -> flimmert
-	//hoch frequenz deswegen weil die textur ja ein 2d array ist -> kann man als funktion aufzeichnen -> ist ein signal -> hat eine frequenz
-	//das flackern bekommt man mit "mip - mapping" weg -> ist heute common practice
-	glBegin(GL_QUADS);
-	// front face
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, 1.0f);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(1.0f, -1.0f, 1.0f);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(1.0f, 1.0f, 1.0f);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f, 1.0f, 1.0f);
-	// back face
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, 1.0f, -1.0f);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(1.0f, 1.0f, -1.0f);
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(1.0f, -1.0f, -1.0f);
-	// top face
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f, 1.0f, -1.0f);
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, 1.0f, 1.0f);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(1.0f, 1.0f, 1.0f);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(1.0f, 1.0f, -1.0f);
-	// bottom face
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(1.0f, -1.0f, -1.0f);
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(1.0f, -1.0f, 1.0f);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, 1.0f);
-	// right face
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(1.0f, -1.0f, -1.0f);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(1.0f, 1.0f, -1.0f);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(1.0f, 1.0f, 1.0f);
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(1.0f, -1.0f, 1.0f);
-	// left face
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, 1.0f);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, 1.0f, 1.0f);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f, 1.0f, -1.0f);
-	glEnd();
 }
 
 void timer(int value)
