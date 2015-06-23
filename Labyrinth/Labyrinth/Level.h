@@ -28,7 +28,7 @@ private:
 	bool isValidFieldType(char fieldType);
 	void drawCube();
 	void loadLevelFromFile(std::string fileName);
-	
+	bool isFree(int x, int y);
 
 };
 

@@ -26,13 +26,63 @@ Level::~Level()
 
 bool Level::checkAllowed(GLfloat OldX, GLfloat OldZ, GLfloat NewX, GLfloat NewZ)
 {
-	mLogger->LogInfo("Old x=<" + std::to_string(OldX) + ">");
-	mLogger->LogInfo("Old z=<" + std::to_string(OldZ) + ">");
+	//check up direction
+	float zUp = NewZ - 0.5f;
+	int zUpInt = (int)zUp;
+	
+	//check down direction
+	float zDown = NewZ + 0.5f;
+	int zDownInt = (int)zDown;
 
-	mLogger->LogInfo("New x=<" + std::to_string(NewX) + ">");
-	mLogger->LogInfo("New z=<" + std::to_string(NewZ) + ">");
+	//check left 
+	float xLeft = NewX - 0.5f;
+	int xLeftInt = (int)xLeft;
 
+	//check right
+	float xRight = NewX + 0.5f;
+	int xRightInt = (int)xRight;
+
+	mLogger->LogInfo("z Coord for up check=<" + std::to_string(zUpInt) + ">");
+	mLogger->LogInfo("z Coord for down check=<" + std::to_string(zDownInt) + ">");
+
+	mLogger->LogInfo("x Coord for left check=<" + std::to_string(xLeftInt) + ">");
+	mLogger->LogInfo("x Coord for right check=<" + std::to_string(xRightInt) + ">");
+
+
+	if (!isFree(xLeftInt, zUpInt))
+	{
+		mLogger->LogInfo("left up not allowed");
+		mLogger->LogInfo("which is mLevel[" + std::to_string(xLeftInt) + "][" + std::to_string(zUpInt) + " <" + std::to_string(mLevel[xLeftInt][zUpInt]) + ">");
+		return false;
+	}
+	if (!isFree(xRightInt, zUpInt))
+	{
+		mLogger->LogInfo("right up not allowed");
+		mLogger->LogInfo("which is mLevel[" + std::to_string(xRightInt) + "][" + std::to_string(zUpInt) + " <" + std::to_string(mLevel[xRightInt][zUpInt]) + ">");
+		return false;
+	}
+	if (!isFree(xLeftInt, zDownInt))
+	{
+		mLogger->LogInfo("right up not allowed");
+		mLogger->LogInfo("which is mLevel[" + std::to_string(xLeftInt) + "][" + std::to_string(zDownInt) + " <" + std::to_string(mLevel[xLeftInt][zDownInt]) + ">");
+		return false;
+	}
+	if (!isFree(xRightInt, zDownInt))
+	{
+		mLogger->LogInfo("right up not allowed");
+		mLogger->LogInfo("which is mLevel[" + std::to_string(xRightInt) + "][" + std::to_string(zDownInt) + " <" + std::to_string(mLevel[xRightInt][zDownInt]) + ">");
+		return false;
+	}
 	return true;
+
+}
+
+bool Level::isFree(int x, int y)
+{
+	if (mLevel[x][y] != '#')
+		return true;
+	else
+		return false;
 }
 
 void Level::loadLevelFromFile(std::string fileName)
