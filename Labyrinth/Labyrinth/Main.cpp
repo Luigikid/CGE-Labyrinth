@@ -9,6 +9,7 @@
 #include "TGALoader.h"
 #include "Logger.h"
 #include "Camera.h"
+#include "Level.h"
 
 
 
@@ -38,11 +39,14 @@ float DeltaMovementUpDown = 0.0f;
 TGALoader *mLoader;
 Logger* mLogger = Logger::getInstance();
 Camera* mCamera = Camera::getInstance();
+Level* mLevel = Level::getInstance();
 
 int main(int argc, char **argv)
 {
 	mLogger->LogInfo("Programm started");
 	mLoader = new TGALoader();
+
+	mLevel->loadLevelFromFile("./../Labyrinth/Level/Level1.txt");
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH);
@@ -196,35 +200,36 @@ void display()
 void RenderScene()
 {
 	//common practice - ursprungspunkt verschieben und objekte auf ursprungspunkt zeichnen
-	glPushMatrix();
-	glTranslatef(-2, 0, 0);
-	glTranslatef(0, 0, 4);	// linke reihe ganz vorne, und dann immer -4 nach hinten (oder umgekehrt)
-	drawCube();
-	glTranslatef(0, 0, -4);
-	drawCube();
-	glTranslatef(0, 0, -4);
-	drawCube();
-	glPopMatrix();
+	mLevel->renderLevel();
+	//glPushMatrix();
+	//glTranslatef(-2, 0, 0);
+	//glTranslatef(0, 0, 4);	// linke reihe ganz vorne, und dann immer -4 nach hinten (oder umgekehrt)
+	//drawCube();
+	//glTranslatef(0, 0, -4);
+	//drawCube();
+	//glTranslatef(0, 0, -4);
+	//drawCube();
+	//glPopMatrix();
 
-	glPushMatrix();
-	glTranslatef(2, 0, 0);
-	glTranslatef(0, 0, 4);
-	drawCube();
-	glTranslatef(0, 0, -4);
-	drawCube();
-	glTranslatef(0, 0, -4);
-	drawCube();
-	glPopMatrix();
+	//glPushMatrix();
+	//glTranslatef(2, 0, 0);
+	//glTranslatef(0, 0, 4);
+	//drawCube();
+	//glTranslatef(0, 0, -4);
+	//drawCube();
+	//glTranslatef(0, 0, -4);
+	//drawCube();
+	//glPopMatrix();
 
-	glPushMatrix();
-	glTranslatef(6, 0, 0);
-	glTranslatef(0, 0, 4);
-	drawCube();
-	glTranslatef(0, 0, -4);
-	drawCube();
-	glTranslatef(0, 0, -4);
-	drawCube();
-	glPopMatrix();
+	//glPushMatrix();
+	//glTranslatef(6, 0, 0);
+	//glTranslatef(0, 0, 4);
+	//drawCube();
+	//glTranslatef(0, 0, -4);
+	//drawCube();
+	//glTranslatef(0, 0, -4);
+	//drawCube();
+	//glPopMatrix();
 }
 
 void drawCube()
