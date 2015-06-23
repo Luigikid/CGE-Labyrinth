@@ -44,7 +44,6 @@ int main(int argc, char **argv)
 	mLogger->LogInfo("Programm started");
 	mLoader = new TGALoader();
 
-	mLevel->loadLevelFromFile("./../Labyrinth/Level/Level1.txt");
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH);

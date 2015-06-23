@@ -8,6 +8,7 @@ Level* Level::getInstance()
 	if (m_pLevel == NULL)
 	{
 		m_pLevel = new Level();
+		m_pLevel->loadLevelFromFile("./../Labyrinth/Level/Level1.txt");
 
 	}
 	return m_pLevel;
@@ -47,8 +48,6 @@ void Level::loadLevelFromFile(std::string fileName)
 
 		while (LevelFile >> std::noskipws >> fieldType)
 		{
-			mLogger->LogInfo("fieldType=<" + std::to_string(fieldType) + ">");
-
 			if (fieldType == '\n')
 			{
 				mLevel.push_back(row);
@@ -65,13 +64,19 @@ void Level::loadLevelFromFile(std::string fileName)
 	}
 	else
 		mLogger->LogError("could not read Level file");
+
+	float x, y;
+	getStartingPoint(x, y);
+	mLogger->LogInfo("starting at X=<" + std::to_string(x) + ">");
+	mLogger->LogInfo("starting at Y=<" + std::to_string(y) + ">");
 }
 
 bool Level::isValidFieldType(char fieldType)
 {
 	if ((fieldType == '#') ||
 		(fieldType == '\n') ||
-		(fieldType == ' '))
+		(fieldType == ' ') ||
+		(fieldType == 'B'))
 	{
 		return true;
 	}
@@ -83,12 +88,10 @@ void Level::renderLevel()
 {
 	glPushMatrix();
 
-	// spielfeld wird von oben links nach unten rechts gezeichnet (vogelperspektive)
 	for (std::vector<char> row : mLevel)
 	{
 		for (char fieldType : row)
 		{
-			/* 1 feld weiter nach rechts translaten */
 			glTranslatef(mBlockSize * 2, 0, 0);
 			
 			if (fieldType == '#')
@@ -96,7 +99,6 @@ void Level::renderLevel()
 				drawCube();
 			}
 		}
-		/* in die naechste "zeile" translaten */
 		glTranslatef(-(row.size()*(mBlockSize * 2)), 0, mBlockSize * 2);
 	}
 	glPopMatrix();
@@ -139,4 +141,21 @@ void Level::drawCube()
 	glTexCoord2f(1.0f, 1.0f); glVertex3f(-mBlockSize, mBlockSize, mBlockSize);
 	glTexCoord2f(0.0f, 1.0f); glVertex3f(-mBlockSize, mBlockSize, -mBlockSize);
 	glEnd();
+}
+
+void Level::getStartingPoint(float &x, float &y)
+{
+	y = 0;
+	for (std::vector<char> row : mLevel)
+	{
+		x = 0;
+		for (char fieldType : row)
+		{
+			if (fieldType == 'B')
+				return;
+			x++;
+		}
+		y++;
+		
+	}
 }

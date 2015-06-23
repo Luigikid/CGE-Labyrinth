@@ -33,6 +33,7 @@ public:
 	void moveRight();
 
 	void logViewStats();
+	void setStartingPoint(int x, int y);
 
 private:
 	

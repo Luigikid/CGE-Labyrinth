@@ -15,16 +15,20 @@ public:
 
 
 	bool checkAllowed(GLfloat OldX, GLfloat OldZ, GLfloat NewX, GLfloat NewZ);
-	void loadLevelFromFile(std::string fileName);
+	
 	void renderLevel();
+	void getStartingPoint(float &x, float &y);
 private:
 	Logger *mLogger = Logger::getInstance();
+	
 	Level();
 	static Level* m_pLevel;
 	float mBlockSize = 1.0f;
 	std::vector<std::vector<char>> mLevel;
 	bool isValidFieldType(char fieldType);
 	void drawCube();
+	void loadLevelFromFile(std::string fileName);
+	
 
 };
 

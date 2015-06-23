@@ -4,15 +4,19 @@ Camera* Camera::pCamera = NULL;
 
 Camera::Camera()
 {
-	viewCoords.x = 0;
+	float x, y;
+	mLevel->getStartingPoint(x, y);
+	mLogger->LogInfo("Starting x=<" + std::to_string(x) + ">");
+	mLogger->LogInfo("Starting z=<" + std::to_string(y) + ">");
+	viewCoords.x = (x*2)+2;
 	viewCoords.y = 0;
-	viewCoords.z = 0;
+	viewCoords.z = y*2;
 
 	beginAngleX = 360;
 	beginAngleY = 180;
 	angleX = 0;
 	angleY = -180;
-	calculateViewAngle(beginAngleX, beginAngleY);
+	//calculateViewAngle(beginAngleX, beginAngleY);
 	//Unfortunately this is not working as the initial cursor position inits the view
 }
 
@@ -134,4 +138,10 @@ GLfloat Camera::getAngleX()
 GLfloat Camera::getAngleY()
 {
 	return angleY;
+}
+
+void Camera::setStartingPoint(int x, int y)
+{
+	viewCoords.x = x;
+	viewCoords.y = y;
 }
