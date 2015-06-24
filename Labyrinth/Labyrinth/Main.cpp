@@ -70,7 +70,7 @@ int main(int argc, char **argv)
 
 void init(int width, int height)
 {
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClearColor(0.4980392156862745f, 0.7372549019607843f, 1, 0.0f);
 	glClearDepth(1.0);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_DEPTH_TEST);

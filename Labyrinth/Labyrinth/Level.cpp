@@ -39,7 +39,7 @@ bool Level::checkAllowed(GLfloat OldX, GLfloat OldZ, GLfloat NewX, GLfloat NewZ)
 	int x, z;
 	float zOffset;
 	float xOffset;
-	float Offset = 0.5f;
+	float Offset = 0.2f;
 
 	//check with offset in up direction
 	zOffset = NewZ - Offset;

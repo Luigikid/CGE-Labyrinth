@@ -57,7 +57,7 @@ private:
 	};
 	viewCoords viewCoords;
 
-	int speedDivisor = 7;
+	int speedDivisor = 10;
 	GLfloat maxSpeedDiff = 0.15;	// if this is 0.1 we get a lot of gimble locks
 	static Camera *pCamera;
 	Camera();
