@@ -26,60 +26,27 @@ Level::~Level()
 
 bool Level::checkAllowed(GLfloat OldX, GLfloat OldZ, GLfloat NewX, GLfloat NewZ)
 {
-	//check up direction
-	float zUp = NewZ - 0.5f;
-	int zUpInt = (int)zUp;
-	
-	//check down direction
-	float zDown = NewZ + 0.5f;
-	int zDownInt = (int)zDown;
+	mLogger->LogInfo("NewX=<" + std::to_string(NewX) + ">");
+	mLogger->LogInfo("NewZ=<" + std::to_string(NewZ) + ">");
 
-	//check left 
-	float xLeft = NewX - 0.5f;
-	int xLeftInt = (int)xLeft;
+	int x, z;
+	getLevelFieldCoords(NewX, NewZ, x, z);
+	mLogger->LogInfo("xInt=<" + std::to_string(x) + ">");
+	mLogger->LogInfo("zInt=<" + std::to_string(z) + ">");
 
-	//check right
-	float xRight = NewX + 0.5f;
-	int xRightInt = (int)xRight;
+	char fieldType = getFieldTypeForCoords(x, z);
+	mLogger->LogInfo("fieldTyep=<" + std::to_string(fieldType) + ">");
 
-	mLogger->LogInfo("z Coord for up check=<" + std::to_string(zUpInt) + ">");
-	mLogger->LogInfo("z Coord for down check=<" + std::to_string(zDownInt) + ">");
-
-	mLogger->LogInfo("x Coord for left check=<" + std::to_string(xLeftInt) + ">");
-	mLogger->LogInfo("x Coord for right check=<" + std::to_string(xRightInt) + ">");
-
-
-	if (!isFree(xLeftInt, zUpInt))
-	{
-		mLogger->LogInfo("left up not allowed");
-		mLogger->LogInfo("which is mLevel[" + std::to_string(xLeftInt) + "][" + std::to_string(zUpInt) + " <" + std::to_string(mLevel[xLeftInt][zUpInt]) + ">");
+	if (!isFree(x, z))
 		return false;
-	}
-	if (!isFree(xRightInt, zUpInt))
-	{
-		mLogger->LogInfo("right up not allowed");
-		mLogger->LogInfo("which is mLevel[" + std::to_string(xRightInt) + "][" + std::to_string(zUpInt) + " <" + std::to_string(mLevel[xRightInt][zUpInt]) + ">");
-		return false;
-	}
-	if (!isFree(xLeftInt, zDownInt))
-	{
-		mLogger->LogInfo("right up not allowed");
-		mLogger->LogInfo("which is mLevel[" + std::to_string(xLeftInt) + "][" + std::to_string(zDownInt) + " <" + std::to_string(mLevel[xLeftInt][zDownInt]) + ">");
-		return false;
-	}
-	if (!isFree(xRightInt, zDownInt))
-	{
-		mLogger->LogInfo("right up not allowed");
-		mLogger->LogInfo("which is mLevel[" + std::to_string(xRightInt) + "][" + std::to_string(zDownInt) + " <" + std::to_string(mLevel[xRightInt][zDownInt]) + ">");
-		return false;
-	}
+
 	return true;
 
 }
 
-bool Level::isFree(int x, int y)
+bool Level::isFree(int x, int z)
 {
-	if (mLevel[x][y] != '#')
+	if (mLevel[z][x] != '#')
 		return true;
 	else
 		return false;
@@ -152,6 +119,32 @@ void Level::renderLevel()
 		glTranslatef(-(row.size()*(mBlockSize * 2)), 0, mBlockSize * 2);
 	}
 	glPopMatrix();
+}
+
+void Level::getLevelFieldCoords(float x, float z, int &xInt, int &zInt)
+{
+	x = x - 2.0f;
+	
+	x = x + mBlockSize;	// add +1 blocksize as our blocks are from -blocksize to +blocksize (which is 2 blocksizes)
+	z = z + mBlockSize;
+	
+	x = x / (2 * mBlockSize);
+	z = z / (2 * mBlockSize);
+
+	//always round to the smaller int (which is done by default)
+	xInt = (int)x;
+	zInt = (int)z;
+}
+
+char Level::getFieldTypeForCoords(int x, int z)
+{
+	if ((x >= 0) && (z >= 0))	// TODO: implement limit check for above limit
+		return mLevel[z][x];
+	else
+	{
+		mLogger->LogError("tried to get Fieldtype for x=<" + std::to_string(x) + "> and z=<" + std::to_string(z) + ">");
+		return '#';	//return a wall 
+	}
 }
 
 void Level::drawCube()

@@ -29,6 +29,8 @@ private:
 	void drawCube();
 	void loadLevelFromFile(std::string fileName);
 	bool isFree(int x, int y);
+	void getLevelFieldCoords(float x, float z, int &xInt, int &zInt);
+	char getFieldTypeForCoords(int x, int z);
 
 };
 
