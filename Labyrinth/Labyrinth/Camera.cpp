@@ -168,27 +168,18 @@ void Camera::moveRight()
 
 float Camera::getDiff(float value1, float value2)
 {
-	mLogger->LogInfo("1");
 	float diff = 0;
-	if (value1 >= value2)
-	{
-		mLogger->LogInfo("value1 - value2");
-		diff = value1 - value2;
-		mLogger->LogInfo("diff=<" + std::to_string(diff) + ">");
-	}
-	else
-	{
-		mLogger->LogInfo("value2 - value1");
-		diff = value2 - value1;
-		mLogger->LogInfo("diff=<" + std::to_string(diff) + ">");
-	}
 
-	if (diff == 0)
+	if (value1 >= value2)
+		diff = value1 - value2;
+	else
+		diff = value2 - value1;
+
+	if (diff == 0)	// clamp 
 		diff = 1;
 	if (diff > 2)
 		diff = 2;
 
-	mLogger->LogInfo("2");
 	return diff;
 }
 
