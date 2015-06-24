@@ -57,7 +57,8 @@ private:
 	};
 	viewCoords viewCoords;
 
-	int speedDivisor = 8;
+	int speedDivisor = 7;
+	GLfloat maxSpeedDiff = 4.5;
 	static Camera *pCamera;
 	Camera();
 

@@ -96,8 +96,14 @@ void Camera::logViewStats()
 
 void Camera::moveForward()
 {
-	GLfloat newX = viewCoords.x + ((float)(sin(RAD(angleY))) / (speedDivisor * getDiff(angleY, oldAngleY)));
-	GLfloat newZ = viewCoords.z - ((float)(cos(RAD(angleY))) / (speedDivisor * getDiff(angleY, oldAngleY)));
+	GLfloat newX = viewCoords.x + ((float)(sin(RAD(angleY))) / speedDivisor);
+	GLfloat newZ = viewCoords.z - ((float)(cos(RAD(angleY))) / speedDivisor);
+
+	if (getDiff(newX, viewCoords.x) > maxSpeedDiff)
+		newX = viewCoords.x + maxSpeedDiff;
+
+	if (getDiff(newZ, viewCoords.z) > maxSpeedDiff)
+		newZ = viewCoords.z + maxSpeedDiff;
 
 	if (mLevel->checkAllowed(viewCoords.x, viewCoords.z, newX, newZ))
 	{
@@ -108,8 +114,14 @@ void Camera::moveForward()
 
 void Camera::moveBack()
 {
-	GLfloat newX = viewCoords.x - ((float)(sin(RAD(angleY))) / (speedDivisor * getDiff(angleY, oldAngleY)));
-	GLfloat newZ = viewCoords.z + ((float)(cos(RAD(angleY))) / (speedDivisor * getDiff(angleY, oldAngleY)));
+	GLfloat newX = viewCoords.x - ((float)(sin(RAD(angleY))) / speedDivisor);
+	GLfloat newZ = viewCoords.z + ((float)(cos(RAD(angleY))) / speedDivisor);
+
+	if (getDiff(newX, viewCoords.x) > maxSpeedDiff)
+		newX = viewCoords.x + maxSpeedDiff;
+
+	if (getDiff(newZ, viewCoords.z) > maxSpeedDiff)
+		newZ = viewCoords.z + maxSpeedDiff;
 
 	if (mLevel->checkAllowed(viewCoords.x, viewCoords.z, newX, newZ))
 	{
@@ -120,8 +132,14 @@ void Camera::moveBack()
 
 void Camera::moveLeft()
 {
-	GLfloat newX = viewCoords.x - ((float)(cos(RAD(angleY))) / (speedDivisor * getDiff(angleY, oldAngleY)));
-	GLfloat newZ = viewCoords.z - ((float)(sin(RAD(angleY))) / (speedDivisor * getDiff(angleY, oldAngleY)));
+	GLfloat newX = viewCoords.x - ((float)(cos(RAD(angleY))) / speedDivisor);
+	GLfloat newZ = viewCoords.z - ((float)(sin(RAD(angleY))) / speedDivisor);
+
+	if (getDiff(newX, viewCoords.x) > maxSpeedDiff)
+		newX = viewCoords.x + maxSpeedDiff;
+
+	if (getDiff(newZ, viewCoords.z) > maxSpeedDiff)
+		newZ = viewCoords.z + maxSpeedDiff;
 
 	if (mLevel->checkAllowed(viewCoords.x, viewCoords.z, newX, newZ))
 	{
@@ -132,8 +150,14 @@ void Camera::moveLeft()
 
 void Camera::moveRight()
 {
-	GLfloat newX = viewCoords.x + ((float)(cos(RAD(angleY))) / (speedDivisor * getDiff(angleY, oldAngleY)));
-	GLfloat newZ = viewCoords.z + ((float)(sin(RAD(angleY))) / (speedDivisor * getDiff(angleY, oldAngleY)));
+	GLfloat newX = viewCoords.x + ((float)(cos(RAD(angleY))) / speedDivisor);
+	GLfloat newZ = viewCoords.z + ((float)(sin(RAD(angleY))) / speedDivisor);
+
+	if (getDiff(newX, viewCoords.x) > maxSpeedDiff)
+		newX = viewCoords.x + maxSpeedDiff;
+
+	if (getDiff(newZ, viewCoords.z) > maxSpeedDiff)
+		newZ = viewCoords.z + maxSpeedDiff;
 
 	if (mLevel->checkAllowed(viewCoords.x, viewCoords.z, newX, newZ))
 	{
