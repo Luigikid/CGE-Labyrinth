@@ -18,6 +18,9 @@ public:
 	
 	void renderLevel();
 	void getStartingPoint(float &x, float &y);
+	void setFloorTextureId(GLuint id);
+	void setWallTextureId(GLuint id);
+
 private:
 	Logger *mLogger = Logger::getInstance();
 	
@@ -27,10 +30,14 @@ private:
 	std::vector<std::vector<char>> mLevel;
 	bool isValidFieldType(char fieldType);
 	void drawCube();
+	void drawFloor();
 	void loadLevelFromFile(std::string fileName);
 	bool isFree(int x, int y);
 	void getLevelFieldCoords(float x, float z, int &xInt, int &zInt);
 	char getFieldTypeForCoords(int x, int z);
+
+	GLuint floorTextureId = 0;
+	GLuint wallTextureId = 0;
 
 };
 

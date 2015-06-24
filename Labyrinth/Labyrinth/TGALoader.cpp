@@ -244,7 +244,9 @@ int TGALoader::tgaSave(char            *filename,
 	FILE *file;
 
 	// open file and check for errors
+#pragma warning (disable : 4996)
 	file = fopen(filename, "wb");
+#pragma warning (default : 4996)
 	if (file == NULL) {
 		return(TGA_ERROR_FILE_OPEN);
 	}
@@ -303,8 +305,9 @@ int TGALoader::tgaSaveSeries(char        *filename,
 	// compute the new filename by adding the series number and the extension
 
 	newFilename = (char *)malloc(sizeof(char)* strlen(filename) + 8);
-
+#pragma warning (disable : 4996)
 	sprintf(newFilename, "%s%d.tga", filename, savedImages);
+#pragma warning (default : 4996)
 	// save the image
 	status = tgaSave(newFilename, width, height, pixelDepth, imageData);
 	//increase the counter
@@ -330,7 +333,10 @@ void TGALoader::loadTexture(std::string Filename)
 	tgaInfo *info = 0;
 	int mode;
 
-	info = tgaLoad("crate.tga");
+	char *cstr = new char[Filename.length() + 1];
+	strcpy(cstr, Filename.c_str());
+	info = tgaLoad(cstr);
+	delete[] cstr;
 
 	if (info->status != TGA_OK) {
 		fprintf(stderr, "error loading texture image: %d\n", info->status);

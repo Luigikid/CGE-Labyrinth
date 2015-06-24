@@ -8,7 +8,7 @@ Level* Level::getInstance()
 	if (m_pLevel == NULL)
 	{
 		m_pLevel = new Level();
-		m_pLevel->loadLevelFromFile("./../Labyrinth/Level/Level1.txt");
+		m_pLevel->loadLevelFromFile("./../Labyrinth/Levels/Level1.txt");
 
 	}
 	return m_pLevel;
@@ -17,6 +17,16 @@ Level* Level::getInstance()
 
 Level::Level()
 {
+}
+
+void Level::setFloorTextureId(GLuint id)
+{
+	floorTextureId = id;
+}
+
+void Level::setWallTextureId(GLuint id)
+{
+	wallTextureId = id;
 }
 
 
@@ -119,7 +129,6 @@ bool Level::isValidFieldType(char fieldType)
 void Level::renderLevel()
 {
 	glPushMatrix();
-
 	for (std::vector<char> row : mLevel)
 	{
 		for (char fieldType : row)
@@ -130,6 +139,8 @@ void Level::renderLevel()
 			{
 				drawCube();
 			}
+			else
+				drawFloor();
 		}
 		glTranslatef(-(row.size()*(mBlockSize * 2)), 0, mBlockSize * 2);
 	}
@@ -161,9 +172,21 @@ char Level::getFieldTypeForCoords(int x, int z)
 		return '#';	//return a wall 
 	}
 }
+void Level::drawFloor()
+{
+	glBindTexture(GL_TEXTURE_2D, wallTextureId);
+	glBegin(GL_QUADS);
+	// bottom face
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(-mBlockSize, -mBlockSize, -mBlockSize);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(mBlockSize, -mBlockSize, -mBlockSize);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(mBlockSize, -mBlockSize, mBlockSize);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(-mBlockSize, -mBlockSize, mBlockSize);
 
+	glEnd();
+}
 void Level::drawCube()
 {
+	glBindTexture(GL_TEXTURE_2D, floorTextureId);
 	//Die Kisten textur ist eine "hoch-frequente" Textur -> flimmert
 	//hoch frequenz deswegen weil die textur ja ein 2d array ist -> kann man als funktion aufzeichnen -> ist ein signal -> hat eine frequenz
 	//das flackern bekommt man mit "mip - mapping" weg -> ist heute common practice

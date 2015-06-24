@@ -35,7 +35,6 @@ int begin_y = 0;		/* y value of mouse movement */
 int window = 0;
 float DeltaMovementUpDown = 0.0f;
 
-TGALoader *mLoader;
 Logger* mLogger = Logger::getInstance();
 Camera* mCamera = Camera::getInstance();
 Level* mLevel = Level::getInstance();
@@ -43,8 +42,6 @@ Level* mLevel = Level::getInstance();
 int main(int argc, char **argv)
 {
 	mLogger->LogInfo("Programm started");
-	mLoader = new TGALoader();
-
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH);
@@ -81,7 +78,14 @@ void init(int width, int height)
 
 	resize(width, height);
 
-	mLoader->loadTexture("crate.tga");
+	TGALoader wallLoader;
+	wallLoader.loadTexture("./../Labyrinth/Textures/crate.tga");
+	mLevel->setFloorTextureId(wallLoader.getTextureId());
+
+	TGALoader floorLoader;
+	floorLoader.loadTexture("./../Labyrinth/Textures/ground2.tga");
+	mLevel->setWallTextureId(floorLoader.getTextureId());
+
 
 }
 
@@ -215,10 +219,7 @@ void display()
 
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);	// Environment mode -> bei GL_MODULATE wird defaultmäßig multipliziert; bei GL_BLEND wird "geblendet"
-	
-	glBindTexture(GL_TEXTURE_2D, mLoader->getTextureId());
-
-	
+		
 	mLevel->renderLevel();
 
 	glDisable(GL_TEXTURE_2D);
