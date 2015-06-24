@@ -18,6 +18,7 @@ using namespace std;
 void init(int width, int height);	// TODO: Create Main Class and not this c like bull****
 void resize(int width, int height);
 void keyPressed(unsigned char key, int x, int y);
+void keyReleased(unsigned char key, int x, int y);
 void display();
 void drawCube();
 void timer(int value);
@@ -56,6 +57,7 @@ int main(int argc, char **argv)
 	glutDisplayFunc(&display);
 	glutReshapeFunc(&resize);
 	glutKeyboardFunc(&keyPressed);
+	glutKeyboardUpFunc(&keyReleased);
 
 	init(640, 480);
 	glutTimerFunc(15, timer, 1);
@@ -106,19 +108,23 @@ void keyPressed(unsigned char key, int x, int y)
 		break;
 
 	case 'w':
-		mCamera->moveForward();
+		//mCamera->moveForward();
+		mCamera->modifyKeyStatus('w', true);
 		break;
 
 	case 'a':
-		mCamera->moveLeft();
+		//mCamera->moveLeft();
+		mCamera->modifyKeyStatus('a', true);
 		break;
 
 	case 's':
-		mCamera->moveBack();
+		//mCamera->moveBack();
+		mCamera->modifyKeyStatus('s', true);
 		break;
 
 	case 'd':
-		mCamera->moveRight();
+		//mCamera->moveRight();
+		mCamera->modifyKeyStatus('d', true);
 		break;
 
 	case 'c':
@@ -127,6 +133,35 @@ void keyPressed(unsigned char key, int x, int y)
 
 	default:
 		break;
+	}
+}
+
+void keyReleased(unsigned char key, int x, int y)
+{
+	switch(key) 
+	{
+		case 'w':
+			//mCamera->moveForward();
+			mCamera->modifyKeyStatus('w', false);
+			break;
+
+		case 'a':
+			//mCamera->moveLeft();
+			mCamera->modifyKeyStatus('a', false);
+			break;
+
+		case 's':
+			//mCamera->moveBack();
+			mCamera->modifyKeyStatus('s', false);
+			break;
+
+		case 'd':
+			//mCamera->moveRight();
+			mCamera->modifyKeyStatus('d', false);
+			break;
+
+		default:
+			break;
 	}
 }
 
@@ -172,6 +207,7 @@ void display()
 	//gluLookAt(mCamera->getViewCoordX(), mCamera->getViewCoordY(), mCamera->getViewCoordZ(),	// ersten 3 Werte = x,y,z von Aug-Punkt - "dort wo ich hinschau"
 	//	0., 0., 0.,		// center point
 	//	0., 1., 0.);	// letzten werte = "up pointer" -> rauf is bei uns rauf = y Achse
+	mCamera->updateMovement();
 	
 	glRotatef(mCamera->getAngleX(), 1, 0, 0);
 	glRotatef(mCamera->getAngleY(), 0, 1, 0);

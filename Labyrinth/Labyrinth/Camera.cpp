@@ -35,9 +35,33 @@ Camera* Camera::getInstance()
 	return pCamera;
 }
 
+void Camera::modifyKeyStatus(char key, bool status)
+{
+	key = tolower(key);
+	switch (key)
+	{
+		case 'w':
+			forwardKeyPressed = status;
+			break;
+
+		case 's':
+			backwardKeyPressed = status;
+			break;
+
+		case'a':
+			leftKeyPressed = status;
+			break;
+
+		case'd':
+			rightKeyPressed = status;
+			break;
+	}
+}
+
 
 void Camera::calculateViewAngle(int x, int y)
 {
+	oldAngleY = angleY;
 	/* calculate new modelview matrix values */
 	angleY = angleY + (x - beginAngleX);	// aktuelle x coord - x coordinate von beginn
 	angleX = angleX + (y - beginAngleY);	// wenn ich mich nach links rechts drehen will -> drehung um y Achse -> daher sind hier x und y "vertauscht"
@@ -72,8 +96,8 @@ void Camera::logViewStats()
 
 void Camera::moveForward()
 {
-	GLfloat newX = viewCoords.x + (float(sin(RAD(angleY))) / speedDivisor);
-	GLfloat newZ = viewCoords.z - (float(cos(RAD(angleY))) / speedDivisor);
+	GLfloat newX = viewCoords.x + ((float)(sin(RAD(angleY))) / (speedDivisor * getDiff(angleY, oldAngleY)));
+	GLfloat newZ = viewCoords.z - ((float)(cos(RAD(angleY))) / (speedDivisor * getDiff(angleY, oldAngleY)));
 
 	if (mLevel->checkAllowed(viewCoords.x, viewCoords.z, newX, newZ))
 	{
@@ -84,8 +108,8 @@ void Camera::moveForward()
 
 void Camera::moveBack()
 {
-	GLfloat newX = viewCoords.x - (float(sin(RAD(angleY))) / speedDivisor);
-	GLfloat newZ = viewCoords.z + (float(cos(RAD(angleY))) / speedDivisor);
+	GLfloat newX = viewCoords.x - ((float)(sin(RAD(angleY))) / (speedDivisor * getDiff(angleY, oldAngleY)));
+	GLfloat newZ = viewCoords.z + ((float)(cos(RAD(angleY))) / (speedDivisor * getDiff(angleY, oldAngleY)));
 
 	if (mLevel->checkAllowed(viewCoords.x, viewCoords.z, newX, newZ))
 	{
@@ -96,8 +120,8 @@ void Camera::moveBack()
 
 void Camera::moveLeft()
 {
-	GLfloat newX = viewCoords.x - (float(cos(RAD(angleY))) * 0.2);
-	GLfloat newZ = viewCoords.z - (float(sin(RAD(angleY))) * 0.2);
+	GLfloat newX = viewCoords.x - ((float)(cos(RAD(angleY))) / (speedDivisor * getDiff(angleY, oldAngleY)));
+	GLfloat newZ = viewCoords.z - ((float)(sin(RAD(angleY))) / (speedDivisor * getDiff(angleY, oldAngleY)));
 
 	if (mLevel->checkAllowed(viewCoords.x, viewCoords.z, newX, newZ))
 	{
@@ -108,8 +132,8 @@ void Camera::moveLeft()
 
 void Camera::moveRight()
 {
-	GLfloat newX = viewCoords.x + (float(cos(RAD(angleY))) * 0.2);
-	GLfloat newZ = viewCoords.z + (float(sin(RAD(angleY))) * 0.2);
+	GLfloat newX = viewCoords.x + ((float)(cos(RAD(angleY))) / (speedDivisor * getDiff(angleY, oldAngleY)));
+	GLfloat newZ = viewCoords.z + ((float)(sin(RAD(angleY))) / (speedDivisor * getDiff(angleY, oldAngleY)));
 
 	if (mLevel->checkAllowed(viewCoords.x, viewCoords.z, newX, newZ))
 	{
@@ -118,6 +142,43 @@ void Camera::moveRight()
 	}
 }
 
+float Camera::getDiff(float value1, float value2)
+{
+	mLogger->LogInfo("1");
+	float diff = 0;
+	if (value1 >= value2)
+	{
+		mLogger->LogInfo("value1 - value2");
+		diff = value1 - value2;
+		mLogger->LogInfo("diff=<" + std::to_string(diff) + ">");
+	}
+	else
+	{
+		mLogger->LogInfo("value2 - value1");
+		diff = value2 - value1;
+		mLogger->LogInfo("diff=<" + std::to_string(diff) + ">");
+	}
+
+	if (diff == 0)
+		diff = 1;
+	if (diff > 2)
+		diff = 2;
+
+	mLogger->LogInfo("2");
+	return diff;
+}
+
+void Camera::updateMovement()
+{
+	if (forwardKeyPressed)
+		moveForward();
+	if (backwardKeyPressed)
+		moveBack();
+	if (leftKeyPressed)
+		moveLeft();
+	if (rightKeyPressed)
+		moveRight();
+}
 
 GLfloat Camera::getViewCoordX()
 {

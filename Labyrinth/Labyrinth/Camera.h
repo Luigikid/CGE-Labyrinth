@@ -32,6 +32,9 @@ public:
 	void moveLeft();
 	void moveRight();
 
+	void modifyKeyStatus(char key, bool pressed);
+	void updateMovement();
+
 	void logViewStats();
 	void setStartingPoint(int x, int y);
 
@@ -39,6 +42,7 @@ private:
 	
 	GLfloat angleX;
 	GLfloat angleY;
+	GLfloat oldAngleY;
 	GLfloat beginAngleX;
 	GLfloat beginAngleY;
 
@@ -53,11 +57,18 @@ private:
 	};
 	viewCoords viewCoords;
 
-	int speedDivisor = 5;
+	int speedDivisor = 8;
 	static Camera *pCamera;
 	Camera();
 
 	Logger* mLogger = Logger::getInstance();
 	Level* mLevel = Level::getInstance();
+
+	bool forwardKeyPressed = false;
+	bool backwardKeyPressed = false;
+	bool leftKeyPressed = false;
+	bool rightKeyPressed = false;
+
+	float getDiff(float value1, float value2);
 };
 
