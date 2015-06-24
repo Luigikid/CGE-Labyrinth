@@ -26,17 +26,32 @@ Level::~Level()
 
 bool Level::checkAllowed(GLfloat OldX, GLfloat OldZ, GLfloat NewX, GLfloat NewZ)
 {
-	mLogger->LogInfo("NewX=<" + std::to_string(NewX) + ">");
-	mLogger->LogInfo("NewZ=<" + std::to_string(NewZ) + ">");
-
 	int x, z;
-	getLevelFieldCoords(NewX, NewZ, x, z);
-	mLogger->LogInfo("xInt=<" + std::to_string(x) + ">");
-	mLogger->LogInfo("zInt=<" + std::to_string(z) + ">");
+	float zOffset;
+	float xOffset;
+	float Offset = 0.5f;
 
-	char fieldType = getFieldTypeForCoords(x, z);
-	mLogger->LogInfo("fieldTyep=<" + std::to_string(fieldType) + ">");
+	//check with offset in up direction
+	zOffset = NewZ - Offset;
+	getLevelFieldCoords(NewX, zOffset, x, z);
+	if (!isFree(x, z))
+		return false;
 
+	//check with offset in down direction
+	zOffset = NewZ + Offset;
+	getLevelFieldCoords(NewX, zOffset, x, z);
+	if (!isFree(x, z))
+		return false;
+
+	//check with offset in left direction
+	xOffset = NewX - Offset;
+	getLevelFieldCoords(xOffset, NewZ, x, z);
+	if (!isFree(x, z))
+		return false;
+
+	//check with offset in right direction
+	xOffset = NewX + Offset;
+	getLevelFieldCoords(xOffset, NewZ, x, z);
 	if (!isFree(x, z))
 		return false;
 
