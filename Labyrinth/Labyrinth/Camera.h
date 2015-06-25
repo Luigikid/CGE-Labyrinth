@@ -42,12 +42,9 @@ private:
 	
 	GLfloat angleX;
 	GLfloat angleY;
-	GLfloat oldAngleY;
+
 	GLfloat beginAngleX;
 	GLfloat beginAngleY;
-
-	GLfloat deltaMovement;
-	GLfloat deltaAngle;
 
 	struct viewCoords
 	{

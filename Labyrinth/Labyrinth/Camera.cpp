@@ -61,7 +61,6 @@ void Camera::modifyKeyStatus(char key, bool status)
 
 void Camera::calculateViewAngle(int x, int y)
 {
-	oldAngleY = angleY;
 	/* calculate new modelview matrix values */
 	angleY = angleY + (x - beginAngleX);	// aktuelle x coord - x coordinate von beginn
 	angleX = angleX + (y - beginAngleY);	// wenn ich mich nach links rechts drehen will -> drehung um y Achse -> daher sind hier x und y "vertauscht"
