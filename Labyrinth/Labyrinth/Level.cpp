@@ -54,34 +54,39 @@ bool Level::checkAllowed(GLfloat OldX, GLfloat OldZ, GLfloat &NewX, GLfloat &New
 
 	if (!isFree(x, z))
 	{
-		GLfloat tempX;
-		getWorldSpaceCoordsFromLevelCoords(0, z, tempX, NewZ);
-		NewZ -= mCollissionOffset + mBlockSize + 2.0;
-
-		return true;
+		int tempZ = (int)NewZ;
+		NewZ = (float)tempZ + mCollissionOffset;
 	}
 		
-
 	//check with offset in down direction
 	zOffset = NewZ + mCollissionOffset;
 	getLevelFieldCoords(NewX, zOffset, x, z);
 	if (!isFree(x, z))
-		return false;
+	{
+		int tempZ = (int)NewZ;
+		NewZ = (float)tempZ - mCollissionOffset + mBlockSize;
+	}
 
 	//check with offset in left direction
 	xOffset = NewX - mCollissionOffset;
 	getLevelFieldCoords(xOffset, NewZ, x, z);
 	if (!isFree(x, z))
-		return false;
+	{
+		int tempX = (int)NewX;
+		NewX = (float)tempX + mCollissionOffset;
+	}
+
 
 	//check with offset in right direction
 	xOffset = NewX + mCollissionOffset;
 	getLevelFieldCoords(xOffset, NewZ, x, z);
 	if (!isFree(x, z))
-		return false;
+	{
+		int tempX = (int)NewX;
+		NewX = (float)tempX - mCollissionOffset + mBlockSize;
+	}
 
 	return true;
-
 }
 
 bool Level::checkLevelFinished()
