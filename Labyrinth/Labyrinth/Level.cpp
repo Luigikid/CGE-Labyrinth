@@ -9,7 +9,6 @@ Level* Level::getInstance()
 	{
 		m_pLevel = new Level();
 		m_pLevel->loadLevelFromFile("./../Labyrinth/Levels/Level1.txt");
-
 	}
 	return m_pLevel;
 }
@@ -17,6 +16,7 @@ Level* Level::getInstance()
 
 Level::Level()
 {
+	levelFinished = false;
 }
 
 void Level::setFloorTextureId(GLuint id)
@@ -32,6 +32,11 @@ void Level::setWallTextureId(GLuint id)
 
 Level::~Level()
 {
+}
+
+void Level::modifyGoalRotationValue(GLfloat value)
+{
+	goalRotation += value;
 }
 
 bool Level::checkAllowed(GLfloat OldX, GLfloat OldZ, GLfloat &NewX, GLfloat &NewZ)
@@ -50,7 +55,9 @@ bool Level::checkAllowed(GLfloat OldX, GLfloat OldZ, GLfloat &NewX, GLfloat &New
 	if (!isFree(x, z))
 	{
 		GLfloat tempX;
-		getWorldSpaceCoordsFromLevelCoords(x, z, tempX, NewZ);
+		getWorldSpaceCoordsFromLevelCoords(0, z, tempX, NewZ);
+		NewZ -= mCollissionOffset + mBlockSize + 2.0;
+
 		return true;
 	}
 		
@@ -79,7 +86,13 @@ bool Level::checkAllowed(GLfloat OldX, GLfloat OldZ, GLfloat &NewX, GLfloat &New
 
 bool Level::checkLevelFinished()
 {
-	return levelFinished;
+	if (levelFinished && !noticedAboutFinished)
+	{
+		mLogger->LogInfo("level given info for finish");
+		noticedAboutFinished = true;
+		return true;
+	}
+	return false;
 }
 
 
@@ -218,7 +231,11 @@ void Level::drawFloor()
 void Level::drawGoal()
 {
 	glScalef(0.5, 0.5, 0.5);
+	glRotatef(goalRotation, 0, 1, 0);
+	
+	
 	glBegin(GL_TRIANGLES);           // Begin drawing the pyramid with 4 triangles
+	glColor3f(1, 0.8431372549019608, 0);	// make it gold
 	// Front
 	glVertex3f(0.0f, 1.0f, 0.0f);
 	glVertex3f(-1.0f, -1.0f, 1.0f);
@@ -240,6 +257,7 @@ void Level::drawGoal()
 	glVertex3f(-1.0f, -1.0f, 1.0f);
 	glEnd();   // Done drawing the pyramid
 
+	glRotatef(-goalRotation, 0, 1, 0);
 	glScalef(2, 2, 2);
 	drawFloor();
 }

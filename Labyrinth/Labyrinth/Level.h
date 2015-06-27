@@ -21,10 +21,14 @@ public:
 	void setFloorTextureId(GLuint id);
 	void setWallTextureId(GLuint id);
 	bool checkLevelFinished();
+	void modifyGoalRotationValue(GLfloat value);
 
 private:
 	Logger *mLogger = Logger::getInstance();
 	bool levelFinished = false;
+	bool noticedAboutFinished = false;
+
+	GLfloat goalRotation = 0;
 	
 	Level();
 	static Level* m_pLevel;

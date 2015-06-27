@@ -27,6 +27,7 @@ void mouseMotion(int x, int y);
 void reportGLError(const char * msg);
 void loadTexture();
 void timerWarpAnimation(int Recursion);
+void timerAnimateGoal(int unused);
 bool BounceUpwards = true;
 
 int moving = 0;			/* flag that is true while mouse moves */
@@ -65,6 +66,7 @@ int main(int argc, char **argv)
 	glutPassiveMotionFunc(mouseMotion);
 
 	glutFullScreen();
+	glutTimerFunc(1, &timerAnimateGoal, 150);
 	glutMainLoop();
 	return 0;
 }
@@ -215,7 +217,7 @@ void display()
 	
 	mCamera->updateMovement();
 	if (mLevel->checkLevelFinished())
-		glutTimerFunc(200, &timerWarpAnimation, 10);
+		glutTimerFunc(1, &timerWarpAnimation, 150);
 
 	glRotatef(mCamera->getAngleX(), 1, 0, 0);
 	glRotatef(mCamera->getAngleY(), 0, 1, 0);
@@ -237,29 +239,24 @@ void timer(int value)
 	glutTimerFunc(15, timer, 1);
 }
 
-void timerWarpAnimation(int Recursion)
+void timerAnimateGoal(int unused)
 {
+	mLevel->modifyGoalRotationValue(0.5);
+	glutTimerFunc(10, &timerAnimateGoal, 1);
+
+}
+
+void timerWarpAnimation(int Recursion)	// warp to the sky into another level?
+{
+	//mLogger->LogInfo("warpanim called with Recursion value=<" + std::to_string(Recursion) + ">");
 	if (Recursion > 0)
 	{
-		if (BounceUpwards)
-		{
-			mCamera->modifyViewCoordY(-0.005f);
-			if (mCamera->getViewCoordY() < -0.5)
-				BounceUpwards = false;
-		}
-		else
-		{
-			mCamera->modifyViewCoordY(0.005f);
-			if (mCamera->getViewCoordY() > 0)
-				BounceUpwards = true;
-		}
-
-		glutPostRedisplay();
-		glutTimerFunc(200, &timerWarpAnimation, --Recursion);
+		mCamera->modifyViewCoordY(+0.1f);
+		
+		glutTimerFunc(10, &timerWarpAnimation, --Recursion);
 	}
 	else
 	{
-		/* Nach Ablauf der Zeit das Programm beenden */
 		glutDestroyWindow(window);
 		exit(0);
 	}
