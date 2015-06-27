@@ -92,6 +92,11 @@ void Camera::logViewStats()
 	mLogger->LogInfo("x=<" + std::to_string(beginAngleX) + ">");
 	mLogger->LogInfo("y=<" + std::to_string(beginAngleY) + ">");
 }
+void Camera::modifyViewCoordY(GLfloat value)
+{
+	viewCoords.y += value;
+}
+
 
 void Camera::moveForward()
 {

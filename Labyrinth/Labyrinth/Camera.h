@@ -23,6 +23,7 @@ public:
 	void calculateViewAngle(int x, int y);
 	GLfloat getViewCoordX();
 	GLfloat getViewCoordY();
+	void modifyViewCoordY(GLfloat value);
 	GLfloat getViewCoordZ();
 	GLfloat getAngleX();
 	GLfloat getAngleY();

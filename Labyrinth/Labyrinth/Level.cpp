@@ -34,33 +34,41 @@ Level::~Level()
 {
 }
 
-bool Level::checkAllowed(GLfloat OldX, GLfloat OldZ, GLfloat NewX, GLfloat NewZ)
+bool Level::checkAllowed(GLfloat OldX, GLfloat OldZ, GLfloat &NewX, GLfloat &NewZ)
 {
 	int x, z;
 	float zOffset;
 	float xOffset;
-	float Offset = 0.2f;
 
 	//check with offset in up direction
-	zOffset = NewZ - Offset;
+	zOffset = NewZ - mCollissionOffset;
 	getLevelFieldCoords(NewX, zOffset, x, z);
+
+	if (getFieldTypeForCoords(x, z) == 'E')
+		levelFinished = true;
+
 	if (!isFree(x, z))
-		return false;
+	{
+		GLfloat tempX;
+		getWorldSpaceCoordsFromLevelCoords(x, z, tempX, NewZ);
+		return true;
+	}
+		
 
 	//check with offset in down direction
-	zOffset = NewZ + Offset;
+	zOffset = NewZ + mCollissionOffset;
 	getLevelFieldCoords(NewX, zOffset, x, z);
 	if (!isFree(x, z))
 		return false;
 
 	//check with offset in left direction
-	xOffset = NewX - Offset;
+	xOffset = NewX - mCollissionOffset;
 	getLevelFieldCoords(xOffset, NewZ, x, z);
 	if (!isFree(x, z))
 		return false;
 
 	//check with offset in right direction
-	xOffset = NewX + Offset;
+	xOffset = NewX + mCollissionOffset;
 	getLevelFieldCoords(xOffset, NewZ, x, z);
 	if (!isFree(x, z))
 		return false;
@@ -68,6 +76,12 @@ bool Level::checkAllowed(GLfloat OldX, GLfloat OldZ, GLfloat NewX, GLfloat NewZ)
 	return true;
 
 }
+
+bool Level::checkLevelFinished()
+{
+	return levelFinished;
+}
+
 
 bool Level::isFree(int x, int z)
 {
@@ -118,7 +132,8 @@ bool Level::isValidFieldType(char fieldType)
 	if ((fieldType == '#') ||
 		(fieldType == '\n') ||
 		(fieldType == ' ') ||
-		(fieldType == 'B'))
+		(fieldType == 'B') ||	// B ... Begin
+		(fieldType == 'E'))		// E ... End
 	{
 		return true;
 	}
@@ -136,9 +151,9 @@ void Level::renderLevel()
 			glTranslatef(mBlockSize * 2, 0, 0);
 			
 			if (fieldType == '#')
-			{
 				drawCube();
-			}
+			else if (fieldType == 'E')
+				drawGoal();
 			else
 				drawFloor();
 		}
@@ -160,6 +175,22 @@ void Level::getLevelFieldCoords(float x, float z, int &xInt, int &zInt)
 	//always round to the smaller int (which is done by default)
 	xInt = (int)x;
 	zInt = (int)z;
+}
+
+void Level::getWorldSpaceCoordsFromLevelCoords(float levelX, float levelZ, float &worldX, float &worldZ)
+{
+	worldX = levelX * (2 * mBlockSize);
+	worldX += 6*mCollissionOffset;
+	
+	worldZ = levelZ * (2 * mBlockSize);
+	worldZ += 6*mCollissionOffset;
+
+
+	mLogger->LogInfo("level x=<" + std::to_string(levelX) + ">");
+	mLogger->LogInfo("level z=<" + std::to_string(levelZ) + ">");
+
+	mLogger->LogInfo("world x=<" + std::to_string(worldX) + ">");
+	mLogger->LogInfo("world z=<" + std::to_string(worldZ) + ">");
 }
 
 char Level::getFieldTypeForCoords(int x, int z)
@@ -184,6 +215,35 @@ void Level::drawFloor()
 
 	glEnd();
 }
+void Level::drawGoal()
+{
+	glScalef(0.5, 0.5, 0.5);
+	glBegin(GL_TRIANGLES);           // Begin drawing the pyramid with 4 triangles
+	// Front
+	glVertex3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(-1.0f, -1.0f, 1.0f);
+	glVertex3f(1.0f, -1.0f, 1.0f);
+
+	// Right
+	glVertex3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(1.0f, -1.0f, 1.0f);
+	glVertex3f(1.0f, -1.0f, -1.0f);
+
+	// Back
+	glVertex3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(1.0f, -1.0f, -1.0f);
+	glVertex3f(-1.0f, -1.0f, -1.0f);
+
+	// Left
+	glVertex3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(-1.0f, -1.0f, -1.0f);
+	glVertex3f(-1.0f, -1.0f, 1.0f);
+	glEnd();   // Done drawing the pyramid
+
+	glScalef(2, 2, 2);
+	drawFloor();
+}
+
 void Level::drawCube()
 {
 	glBindTexture(GL_TEXTURE_2D, floorTextureId);

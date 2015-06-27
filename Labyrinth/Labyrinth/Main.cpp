@@ -26,7 +26,8 @@ void mouse(int button, int state, int x, int y);
 void mouseMotion(int x, int y);
 void reportGLError(const char * msg);
 void loadTexture();
-
+void timerWarpAnimation(int Recursion);
+bool BounceUpwards = true;
 
 int moving = 0;			/* flag that is true while mouse moves */
 int begin_x = 0;        /* x value of mouse movement */
@@ -211,8 +212,11 @@ void display()
 	//gluLookAt(mCamera->getViewCoordX(), mCamera->getViewCoordY(), mCamera->getViewCoordZ(),	// ersten 3 Werte = x,y,z von Aug-Punkt - "dort wo ich hinschau"
 	//	0., 0., 0.,		// center point
 	//	0., 1., 0.);	// letzten werte = "up pointer" -> rauf is bei uns rauf = y Achse
-	mCamera->updateMovement();
 	
+	mCamera->updateMovement();
+	if (mLevel->checkLevelFinished())
+		glutTimerFunc(200, &timerWarpAnimation, 10);
+
 	glRotatef(mCamera->getAngleX(), 1, 0, 0);
 	glRotatef(mCamera->getAngleY(), 0, 1, 0);
 	glTranslatef(-mCamera->getViewCoordX(), -mCamera->getViewCoordY(), -mCamera->getViewCoordZ());	// das ist das vor- zurück gehen. gehen verändert hier die welt und nicht den augpunkt
@@ -233,6 +237,33 @@ void timer(int value)
 	glutTimerFunc(15, timer, 1);
 }
 
+void timerWarpAnimation(int Recursion)
+{
+	if (Recursion > 0)
+	{
+		if (BounceUpwards)
+		{
+			mCamera->modifyViewCoordY(-0.005f);
+			if (mCamera->getViewCoordY() < -0.5)
+				BounceUpwards = false;
+		}
+		else
+		{
+			mCamera->modifyViewCoordY(0.005f);
+			if (mCamera->getViewCoordY() > 0)
+				BounceUpwards = true;
+		}
+
+		glutPostRedisplay();
+		glutTimerFunc(200, &timerWarpAnimation, --Recursion);
+	}
+	else
+	{
+		/* Nach Ablauf der Zeit das Programm beenden */
+		glutDestroyWindow(window);
+		exit(0);
+	}
+}
 
 
 
