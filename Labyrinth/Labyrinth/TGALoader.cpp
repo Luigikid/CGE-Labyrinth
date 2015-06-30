@@ -357,8 +357,13 @@ void TGALoader::loadTexture(std::string Filename)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// geometrie einpacken - S Achse = u Achse = x Achse
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);	// geometrie einpacken - T Achse = v Achse = Y Achse
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	// Magnification - wird beim Skalieren verwendet (Geometrie ändert sich, Kamera ändert sich, Textur pass nicht genau drauf)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	// Minification, hier wird auch ein Filter definiert
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); // Minification, hier wird auch ein Filter definiert
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+	// Generate mipmaps, by the way.
+	glEnable(GL_TEXTURE_2D);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 2);
+
 
 	// Upload the texture bitmap. 
 	w = info->width;
@@ -366,11 +371,12 @@ void TGALoader::loadTexture(std::string Filename)
 
 	// glGenerateMipmap(GL_TEXTURE_2D); not defined? use another version  of opengl?
 
-
 	reportGLError("before uploading texture");
 	GLint format = (mode == 4) ? GL_RGBA : GL_RGB;
 	glTexImage2D(GL_TEXTURE_2D, 0, format, w, h, 0, format,	// bei RGB Bild hat jedes pixel 3 (RGB) ein 1 Byte -> daher auch unsigned byte
 		GL_UNSIGNED_BYTE, info->imageData);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	
 	reportGLError("after uploading texture");	// Wenn der Befehl vorbei ist, dann ist die Textur auf der GraKa
 
 	tgaDestroy(info);	// jetzt hab ich die Textur 2 mal -> einmal im GraKa Speicher einmal im RAM -> aus RAM löschen

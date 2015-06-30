@@ -1,6 +1,7 @@
 #pragma once
 #include <windows.h>              // Standard Windows header
 #include <stdio.h>
+#include <glew.h>
 #include <GL\gl.h>                // Standard Header For OpenGL
 #include <glut.h> 
 #include <GL/glu.h>  

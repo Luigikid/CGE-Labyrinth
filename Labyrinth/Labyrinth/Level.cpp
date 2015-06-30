@@ -237,7 +237,7 @@ void Level::drawGoal()
 {
 	glScalef(0.5, 0.5, 0.5);
 	glRotatef(goalRotation, 0, 1, 0);
-	
+
 	
 	glBegin(GL_TRIANGLES);           // Begin drawing the pyramid with 4 triangles
 	glColor3f(1, 0.8431372549019608, 0);	// make it gold

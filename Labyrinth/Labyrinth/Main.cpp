@@ -1,6 +1,5 @@
 #include <iostream>
-
-
+#include <glew.h>
 #include <glut.h> 
 #include <GL/gl.h>  
 #include <GL/glu.h>  
@@ -50,6 +49,16 @@ int main(int argc, char **argv)
 	glutInitWindowSize(640, 480);
 	glutInitWindowPosition(0, 0);
 	window = glutCreateWindow("Labyrinth");
+	GLenum err = glewInit();
+	if (GLEW_OK != err)
+	{
+		/* Problem: glewInit failed, something is seriously wrong. */
+		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+	}
+
+	fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
+	mLogger->LogInfo("Programm started");
+
 
 	glutSetCursor(GLUT_CURSOR_NONE);	// so there is no cursor being displayed
 
@@ -82,7 +91,7 @@ void init(int width, int height)
 	resize(width, height);
 
 	TGALoader wallLoader;
-	wallLoader.loadTexture("./../Labyrinth/Textures/crate.tga");
+	wallLoader.loadTexture("./../Labyrinth/Textures/brick2db.tga");
 	mLevel->setFloorTextureId(wallLoader.getTextureId());
 
 	TGALoader floorLoader;
